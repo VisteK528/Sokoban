@@ -62,12 +62,98 @@ class Level(LoadLevel):
                     # Tile
                     self._tiles.add(Tile(x, y))
 
+    def horizontal_collision(self):
+        player = self._player.sprite
+        player.rect.x += player.direction.x * player.speed
+
+        boxes = self._boxes.sprites()
+        for i, box in enumerate(boxes):
+            if box.rect.colliderect(player.rect):
+                if player.direction.x < 0:
+                    box.rect.x += player.direction.x * player.speed
+                    player.rect.left = box.rect.right
+                elif player.direction.x > 0:
+                    box.rect.x += player.direction.x * player.speed
+                    player.rect.right = box.rect.left
+
+        for i, box in enumerate(boxes):
+            for box2 in boxes[i+1:]:
+                if box.rect.colliderect(box2):
+                    player.rect.x -= player.direction.x * player.speed
+                    box.rect.x -= player.direction.x * player.speed
+                    if (box.rect.x - box.rect.width) == box2.rect.x:
+                        box.rect.left = box2.rect.right
+                    else:
+                        box.rect.right = box2.rect.left
+
+        for tile in self._tiles.sprites():
+            if tile.rect.colliderect(player.rect):
+                if player.direction.x < 0:
+                    player.rect.left = tile.rect.right
+                elif player.direction.x > 0:
+                    player.rect.right = tile.rect.left
+            for box in boxes:
+                if tile.rect.colliderect(box.rect):
+                    player.rect.x -= player.direction.x * player.speed
+                    if player.direction.x < 0:
+                        box.rect.left = tile.rect.right
+                    elif player.direction.x > 0:
+                        box.rect.right = tile.rect.left
+
+    def vertical_collision(self):
+        player = self._player.sprite
+        player.rect.y += player.direction.y * player.speed
+
+        boxes = self._boxes.sprites()
+        for box in boxes:
+            if box.rect.colliderect(player.rect):
+                if player.direction.y < 0:
+                    box.rect.y += player.direction.y * player.speed
+                    player.rect.top = box.rect.bottom 
+                elif player.direction.y > 0:
+                    box.rect.y += player.direction.y * player.speed
+                    player.rect.bottom = box.rect.top
+
+        for i, box in enumerate(boxes):
+            for box2 in boxes[i+1:]:
+                if box.rect.colliderect(box2):
+                    player.rect.y -= player.direction.y * player.speed
+                    box.rect.y -= player.direction.y * player.speed
+                    if (box.rect.y - box.rect.height) == box2.rect.y:
+                        box.rect.top = box2.rect.bottom
+                    else:
+                        box.rect.bottom = box2.rect.top
+
+        for tile in self._tiles.sprites():
+            if tile.rect.colliderect(player.rect):
+                if player.direction.y < 0:
+                    player.rect.top = tile.rect.bottom
+                elif player.direction.y > 0:
+                    player.rect.bottom = tile.rect.top
+            for box in boxes:
+                if tile.rect.colliderect(box.rect):
+                    player.rect.y -= player.direction.y * player.speed
+                    if player.direction.y < 0:
+                        box.rect.top = tile.rect.bottom
+                    elif player.direction.y > 0:
+                        box.rect.bottom = tile.rect.top
+
     def run(self, window):
-        self._boxes_targets.update()
-        self._player.update()
-        self._boxes.update()
+        self.horizontal_collision()
+        self.vertical_collision()
+        # tiles
         self._tiles.update()
-        self._boxes_targets.draw(window)
-        self._player.draw(window)
-        self._boxes.draw(window)
         self._tiles.draw(window)
+
+        # boxes
+        self._boxes.update()
+        self._boxes.draw(window)
+
+        # boxes targets
+        self._boxes_targets.update()
+        self._boxes_targets.draw(window)
+
+        # player
+        self._player.update()
+        self._player.draw(window)
+

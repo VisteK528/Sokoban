@@ -6,7 +6,7 @@ from level import Level
 class Game:
     def __init__(self, screen_width, screen_height, level=1):
         self._level = level
-        self._fps = 24
+        self._fps = 15
         self._resolution = (screen_width, screen_height)
         self._background_color = "black"
 
@@ -23,5 +23,6 @@ class Game:
                     sys.exit()
             window.fill("black")
             level.run(window)
+            level.draw_grid(window)
 
             pygame.display.update()

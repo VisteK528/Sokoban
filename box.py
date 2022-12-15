@@ -6,3 +6,5 @@ class Box(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load("Textures/Box.png")
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.direction = pygame.math.Vector2(0, 0)
+        self.speed = 50
