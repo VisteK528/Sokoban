@@ -10,7 +10,7 @@ def test_save_data_to_json():
     data = {0: {0: 1, 1: 0, 2: 3},
             1: {0: 1, 1: 0, 2: 4},
             2: {0: 1, 1: 0, 2: 2}}
-    with open("test_save_level.json", "w") as fp:
+    with open("Tests/test_save_level.json", "w") as fp:
         LoadLevel.write_to_json(fp, data)
 
 
