@@ -21,21 +21,8 @@ class Level(LoadLevel):
             self._level_data = self.load_level(
                 f"Levels/Level{self._level}_data.json")
 
-    def draw_grid(self, window, color="white"):
-        for row_count in range(self._rows+1):
-            pygame.draw.line(
-                window, color,
-                (0, row_count * self._tile_size),
-                (self._width, row_count*self._tile_size))
-        for column_count in range(self._columns+1):
-            pygame.draw.line(
-                window, color,
-                (column_count*self._tile_size, 0),
-                (column_count * self._tile_size, self._height))
-
-    def draw_text(self, window, text, font, color,  x, y):
-        img = font.render(text, True, color)
-        window.blit(img, (x, y))
+    def get_dimensions(self):
+        return self._rows, self._columns
 
     def setup(self):
         self._tiles = pygame.sprite.Group()
@@ -154,7 +141,7 @@ class Level(LoadLevel):
         else:
             return False
 
-    def run(self, window):
+    def run(self):
         self.horizontal_collision()
         self.vertical_collision()
         # tiles
@@ -169,15 +156,10 @@ class Level(LoadLevel):
         # player
         self._player.update()
 
-        self.draw_level(window)
-
         if self.box_collision_with_target():
             return True
         else:
             return False
 
-    def draw_level(self, window):
-        self._tiles.draw(window)
-        self._boxes_targets.draw(window)
-        self._boxes.draw(window)
-        self._player.draw(window)
+    def get_sprites(self):
+        return self._tiles, self._boxes_targets, self._boxes, self._player
