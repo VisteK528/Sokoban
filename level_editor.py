@@ -27,7 +27,7 @@ class LevelEditor(Level):
         while True:
             clock.tick(self._fps)
             window.fill("black")
-            super().run(window)
+            super().draw_level(window)
             self.draw_grid(window)
             save_button.draw(window)
             load_button.draw(window)

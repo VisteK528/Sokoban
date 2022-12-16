@@ -10,6 +10,11 @@ class Game:
         self._resolution = (screen_width, screen_height)
         self._background_color = "black"
 
+    def load_level(self):
+        level = Level(self._resolution[0], self._resolution[1], self._level)
+        level.setup()
+        return level
+
     def run(self):
         clock = pygame.time.Clock()
         window = pygame.display.set_mode(self._resolution)
@@ -22,7 +27,8 @@ class Game:
                     pygame.quit()
                     sys.exit()
             window.fill("black")
-            level.run(window)
             level.draw_grid(window)
-
+            if level.run(window):
+                self._level += 1
+                level = self.load_level()
             pygame.display.update()

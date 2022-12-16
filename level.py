@@ -109,7 +109,7 @@ class Level(LoadLevel):
             if box.rect.colliderect(player.rect):
                 if player.direction.y < 0:
                     box.rect.y += player.direction.y * player.speed
-                    player.rect.top = box.rect.bottom 
+                    player.rect.top = box.rect.bottom
                 elif player.direction.y > 0:
                     box.rect.y += player.direction.y * player.speed
                     player.rect.bottom = box.rect.top
@@ -138,22 +138,46 @@ class Level(LoadLevel):
                     elif player.direction.y > 0:
                         box.rect.bottom = tile.rect.top
 
+    def box_collision_with_target(self):
+        boxes = self._boxes
+        targets = self._boxes_targets
+        completed_boxes = 0
+        for box in boxes:
+            box.set_default_image()
+        for box in boxes:
+            for target in targets:
+                if box.rect.x == target.rect.x and box.rect.y == target.rect.y:
+                    box.set_change_image()
+                    completed_boxes += 1
+        if completed_boxes == len(targets):
+            return True
+        else:
+            return False
+
     def run(self, window):
         self.horizontal_collision()
         self.vertical_collision()
         # tiles
         self._tiles.update()
-        self._tiles.draw(window)
-
-        # boxes
-        self._boxes.update()
-        self._boxes.draw(window)
 
         # boxes targets
         self._boxes_targets.update()
-        self._boxes_targets.draw(window)
+
+        # boxes
+        self._boxes.update()
 
         # player
         self._player.update()
-        self._player.draw(window)
 
+        self.draw_level(window)
+
+        if self.box_collision_with_target():
+            return True
+        else:
+            return False
+
+    def draw_level(self, window):
+        self._tiles.draw(window)
+        self._boxes_targets.draw(window)
+        self._boxes.draw(window)
+        self._player.draw(window)
