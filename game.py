@@ -1,7 +1,7 @@
 import pygame
 import sys
 from level import Level
-from interface import Interface, Button
+from interface import Interface, Button, RGB
 
 
 class Game:
@@ -10,7 +10,7 @@ class Game:
         self._fps = 24
         self._info_width = 400
         self._resolution = (screen_width, screen_height)
-        self._background_color = "black"
+        self._background_color = RGB(173, 216, 230)
 
     def load_level(self):
         level = Level(self._resolution[0]-self._info_width,
@@ -20,13 +20,15 @@ class Game:
 
     def run(self):
         clock = pygame.time.Clock()
-        interface = Interface(self._resolution)
+        interface = Interface(self._resolution, "Sokoban Game")
         level = self.load_level()
-        restart_btn = Button(self._resolution[0]-300, 200, "Textures/Save.png")
+        restart_btn = Button(
+            self._resolution[0]-300, 200, 160, 80, "Restart Level",
+            interface.font())
         while True:
             clock.tick(self._fps)
             # Fill the screen with color
-            interface.fill_color()
+            interface.fill_color(self._background_color)
 
             # Draw level number, restart button
             text = f"Level: {self._level}"
@@ -35,9 +37,9 @@ class Game:
             if restart_btn.action():
                 level = self.load_level()
 
-            # Logic
-            rows, columns = level.get_dimensions()
-            interface.draw_grid(rows, columns, 50)
+            # Uncomment to draw grid
+            # rows, columns = level.get_dimensions()
+            # interface.draw_grid(rows, columns, 50)
             if level.run():
                 self._level += 1
                 level = self.load_level()

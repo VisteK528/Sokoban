@@ -2,7 +2,7 @@ from level import Level
 import pygame
 import sys
 from settings import textures_id_dict
-from interface import Interface, Button
+from interface import Interface, Button, RGB
 
 
 class LevelEditor(Level):
@@ -10,29 +10,36 @@ class LevelEditor(Level):
         super().__init__(width, height, level, tile_size)
         self._tools_margin = 400
         self._resolution = (self._width+self._tools_margin, self._height)
-        self._fps = 60
+        self._fps = 120
+
+    def _draw_widgets(self, interface):
+        interface.fill_color()
+        interface.draw_rectangle(1000, 0, 400, 1000, RGB(180, 122, 255))
+        interface.draw_sprites(self.get_sprites())
+        interface.draw_grid(self._rows, self._columns, self._tile_size)
+        interface.draw_text(
+            f'Level: {self._level}', self._width+20, 50)
+        interface.draw_text(
+            'Press UP or DOWN to change level', self._width+20, 70)
+        interface.draw_text(
+            "Sokoban Level Editor", 1200, 30, anchor="CENTER")
 
     def run(self):
         clock = pygame.time.Clock()
-        interface = Interface(self._resolution)
+        interface = Interface(self._resolution, "Sokoban Level Editor")
+
         save_button = Button(
-            self._width + 20, 280, "Textures/Save.png")
+            self._width + 40, 150, 140, 50, "Save", interface.font())
         load_button = Button(
-            self._width + 20, 150, "Textures/Load.png")
+            self._width + 220, 150, 140, 50, "Load", interface.font())
         clicked = False
         self.setup()
         while True:
             clock.tick(self._fps)
-            interface.fill_color("black")
-            interface.draw_sprites(self.get_sprites())
-            interface.draw_grid(self._rows, self._columns, self._tile_size)
+            self._draw_widgets(interface)
+
             save_button.draw(interface.get_window())
             load_button.draw(interface.get_window())
-
-            interface.draw_text(
-                f'Level: {self._level}', self._width+20, 50)
-            interface.draw_text(
-                'Press UP or DOWN to change level', self._width+20, 70)
 
             if save_button.action():
                 self.save_level(
