@@ -48,7 +48,6 @@ class Button:
         window.blit(self.image, (self.rect.x, self.rect.y))
 
     def action(self):
-
         pos = pygame.mouse.get_pos()
 
         if self.rect.collidepoint(pos):

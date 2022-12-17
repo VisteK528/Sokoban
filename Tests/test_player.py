@@ -11,8 +11,8 @@ def test_move_up(monkeypatch):
     player = Player(0, 0)
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     player.update()
-    assert player.rect.x == 0
-    assert player.rect.y == -10
+    assert player.direction.x == 0
+    assert player.direction.y == -1
 
 
 def test_move_down(monkeypatch):
@@ -23,8 +23,8 @@ def test_move_down(monkeypatch):
     player = Player(0, 0)
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     player.update()
-    assert player.rect.x == 0
-    assert player.rect.y == 10
+    assert player.direction.x == 0
+    assert player.direction.y == 1
 
 
 def test_move_left(monkeypatch):
@@ -35,8 +35,8 @@ def test_move_left(monkeypatch):
     player = Player(0, 0)
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     player.update()
-    assert player.rect.x == -10
-    assert player.rect.y == 0
+    assert player.direction.x == -1
+    assert player.direction.y == 0
 
 
 def test_move_right(monkeypatch):
@@ -47,5 +47,5 @@ def test_move_right(monkeypatch):
     player = Player(0, 0)
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     player.update()
-    assert player.rect.x == 10
-    assert player.rect.y == 0
+    assert player.direction.x == 1
+    assert player.direction.y == 0
