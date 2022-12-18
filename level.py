@@ -57,9 +57,12 @@ class Level(LoadLevel):
 
     def horizontal_collision(self):
         player = self._player.sprite
-        player_move = False
         box_move = False
         move_value = player.direction.x * player.speed
+        if move_value != 0:
+            player_move = True
+        else:
+            player_move = False
         player.rect.x += move_value
 
         boxes = self._boxes.sprites()
@@ -87,6 +90,7 @@ class Level(LoadLevel):
 
         for tile in self._tiles.sprites():
             if tile.rect.colliderect(player.rect):
+                player_move = False
                 if player.direction.x < 0:
                     player.rect.left = tile.rect.right
                 elif player.direction.x > 0:
@@ -94,6 +98,7 @@ class Level(LoadLevel):
             for box in boxes:
                 if tile.rect.colliderect(box.rect):
                     player_move = False
+                    box_move = False
                     player.rect.x -= move_value
                     if player.direction.x < 0:
                         box.rect.left = tile.rect.right
@@ -109,7 +114,10 @@ class Level(LoadLevel):
         player = self._player.sprite
         move_value = player.direction.y * player.speed
         player.rect.y += move_value
-        player_move = False
+        if move_value != 0:
+            player_move = True
+        else:
+            player_move = False
         box_move = False
 
         boxes = self._boxes.sprites()
@@ -137,6 +145,7 @@ class Level(LoadLevel):
 
         for tile in self._tiles.sprites():
             if tile.rect.colliderect(player.rect):
+                player_move = False
                 if player.direction.y < 0:
                     player.rect.top = tile.rect.bottom
                 elif player.direction.y > 0:
@@ -144,6 +153,7 @@ class Level(LoadLevel):
             for box in boxes:
                 if tile.rect.colliderect(box.rect):
                     player_move = False
+                    box_move = False
                     player.rect.y -= move_value
                     if player.direction.y < 0:
                         box.rect.top = tile.rect.bottom

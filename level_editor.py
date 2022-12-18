@@ -48,7 +48,7 @@ class LevelEditor(Level):
 
     def _load_level(self):
         path = f"Levels/Level{self._level}_data.json"
-        super().load_level(path, self._level_data)
+        self._level_data = super().load_level(path)
         self.setup()
 
     def _get_mouse_coords_on_grid(self):
