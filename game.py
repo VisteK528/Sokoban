@@ -7,7 +7,7 @@ from interface import Interface, Button, RGB
 class Game:
     def __init__(self, screen_width, screen_height, level=1):
         self._level = level
-        self._fps = 24
+        self._fps = 120
         self._info_width = 400
         self._resolution = (screen_width, screen_height)
         self._background_color = RGB(173, 216, 230)

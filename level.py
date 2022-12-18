@@ -51,23 +51,29 @@ class Level(LoadLevel):
 
     def horizontal_collision(self):
         player = self._player.sprite
-        player.rect.x += player.direction.x * player.speed
+        player_move = False
+        box_move = False
+        move_value = player.direction.x * player.speed
+        player.rect.x += move_value
 
         boxes = self._boxes.sprites()
-        for i, box in enumerate(boxes):
+        for box in boxes:
             if box.rect.colliderect(player.rect):
+                box_move = True
+                player_move = True
+                box.rect.x += move_value
                 if player.direction.x < 0:
-                    box.rect.x += player.direction.x * player.speed
                     player.rect.left = box.rect.right
                 elif player.direction.x > 0:
-                    box.rect.x += player.direction.x * player.speed
                     player.rect.right = box.rect.left
 
         for i, box in enumerate(boxes):
             for box2 in boxes[i+1:]:
                 if box.rect.colliderect(box2):
-                    player.rect.x -= player.direction.x * player.speed
-                    box.rect.x -= player.direction.x * player.speed
+                    box_move = False
+                    player_move = False
+                    box.rect.x -= move_value
+                    player.rect.x -= move_value
                     if (box.rect.x - box.rect.width) == box2.rect.x:
                         box.rect.left = box2.rect.right
                     else:
@@ -81,31 +87,43 @@ class Level(LoadLevel):
                     player.rect.right = tile.rect.left
             for box in boxes:
                 if tile.rect.colliderect(box.rect):
-                    player.rect.x -= player.direction.x * player.speed
+                    player_move = False
+                    player.rect.x -= move_value
                     if player.direction.x < 0:
                         box.rect.left = tile.rect.right
                     elif player.direction.x > 0:
                         box.rect.right = tile.rect.left
 
+        if player_move:
+            player.moves += 1
+        if box_move:
+            player.pushes += 1
+
     def vertical_collision(self):
         player = self._player.sprite
-        player.rect.y += player.direction.y * player.speed
+        move_value = player.direction.y * player.speed
+        player.rect.y += move_value
+        player_move = False
+        box_move = False
 
         boxes = self._boxes.sprites()
         for box in boxes:
             if box.rect.colliderect(player.rect):
+                box.rect.y += move_value
+                player_move = True
+                box_move = True
                 if player.direction.y < 0:
-                    box.rect.y += player.direction.y * player.speed
                     player.rect.top = box.rect.bottom
                 elif player.direction.y > 0:
-                    box.rect.y += player.direction.y * player.speed
                     player.rect.bottom = box.rect.top
 
         for i, box in enumerate(boxes):
             for box2 in boxes[i+1:]:
                 if box.rect.colliderect(box2):
-                    player.rect.y -= player.direction.y * player.speed
-                    box.rect.y -= player.direction.y * player.speed
+                    player.rect.y -= move_value
+                    box.rect.y -= move_value
+                    player_move = False
+                    box_move = False
                     if (box.rect.y - box.rect.height) == box2.rect.y:
                         box.rect.top = box2.rect.bottom
                     else:
@@ -119,11 +137,17 @@ class Level(LoadLevel):
                     player.rect.bottom = tile.rect.top
             for box in boxes:
                 if tile.rect.colliderect(box.rect):
-                    player.rect.y -= player.direction.y * player.speed
+                    player_move = False
+                    player.rect.y -= move_value
                     if player.direction.y < 0:
                         box.rect.top = tile.rect.bottom
                     elif player.direction.y > 0:
                         box.rect.bottom = tile.rect.top
+
+        if player_move:
+            player.moves += 1
+        if box_move:
+            player.pushes += 1
 
     def box_collision_with_target(self):
         boxes = self._boxes
