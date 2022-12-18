@@ -65,15 +65,17 @@ class Interface:
             pygame.display.set_caption(window_title)
         pygame.font.init()
         if default_font is None:
-            self._default_font = pygame.font.SysFont('Liberation Serif', 24)
+            self._default_font = "Textures/Retro_Gaming.ttf"
+            self._default_font_size = 20
         else:
-            self._default_font = default_font
+            self._default_font = default_font[0]
+            self._default_font_size = default_font[1]
 
     def set_font(self, font):
-        self._default_font = font
+        self._default_font, self._default_font_size = font
 
     def font(self):
-        return self._default_font
+        return self._default_font, self._default_font_size
 
     def get_window(self):
         return self._window
@@ -152,7 +154,9 @@ class Interface:
         :type font: pygame.font.Font
         """
         if font is None:
-            font = self._default_font
+            font_name = self._default_font
+            font_size = self._default_font_size
+            font = pygame.font.Font(font_name, font_size)
 
         img = font.render(text, True, color.rgb())
         text_width, text_height = font.size(text)
@@ -220,6 +224,7 @@ class Button:
         text_width, text_height = self._font.size(self._text)
         x_offset = (self._width-text_width)//2
         y_offset = (self._height-text_height)//2
+        self.image.fill(self._background_color.rgb())
         window.blit(self.image, (self.rect.x, self.rect.y))
         window.blit(
             text_img, (self._x+x_offset, self._y+y_offset))

@@ -21,6 +21,12 @@ class Level(LoadLevel):
             self._level_data = self.load_level(
                 f"Levels/Level{self._level}_data.json")
 
+    def get_player_moves(self):
+        return self._player.sprite.moves
+
+    def get_player_pushes(self):
+        return self._player.sprite.pushes
+
     def get_dimensions(self):
         return self._rows, self._columns
 
