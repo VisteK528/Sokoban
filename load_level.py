@@ -76,6 +76,9 @@ class LoadLevel:
                     box_count += 1
                 elif value == textures_id_dict["box_target"]:
                     box_target_count += 1
+                elif value == textures_id_dict["box_target_with_box"]:
+                    box_count += 1
+                    box_target_count += 1
         if player_count > player_required_count:
             raise TooManyPlayersFoundError(player_count)
         if player_count == 0:

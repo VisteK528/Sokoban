@@ -51,6 +51,11 @@ class Level(LoadLevel):
                 elif texture_id == textures_id_dict["box"]:
                     # Box
                     self._boxes.add(Box(x, y))
+                elif texture_id == textures_id_dict["box_target_with_box"]:
+                    self._boxes_targets.add(BoxTarget(x, y))
+                    box = Box(x, y)
+                    box.set_change_image()
+                    self._boxes.add(box)
                 elif texture_id == textures_id_dict["tile"]:
                     # Tile
                     self._tiles.add(Tile(x, y))

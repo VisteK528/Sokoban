@@ -2,6 +2,7 @@ import pygame
 import sys
 from level import Level
 from interface import Interface, Button, RGB
+from time import sleep
 
 
 class Game:
@@ -63,8 +64,11 @@ class Game:
             # rows, columns = level.get_dimensions()
             # interface.draw_grid(rows, columns, 50)
             if level.run():
+                self._interface.draw_sprites(level.get_sprites())
+                pygame.display.update()
                 self._level += 1
                 level = self.load_level()
+                sleep(0.5)
             self._interface.draw_sprites(level.get_sprites())
 
             for event in pygame.event.get():

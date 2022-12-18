@@ -1,4 +1,5 @@
 from level import Level
+from load_level import NoPlayerFoundError
 import pygame
 import sys
 from settings import textures_id_dict
@@ -48,7 +49,13 @@ class LevelEditor(Level):
 
     def _load_level(self):
         path = f"Levels/Level{self._level}_data.json"
-        self._level_data = super().load_level(path)
+        try:
+            self._level_data = super().load_level(path)
+        except NoPlayerFoundError:
+            self._level_data = {
+                str(i): {
+                    str(j): 0 for j in range(self._columns)
+                    } for i in range(self._rows)}
         self.setup()
 
     def _get_mouse_coords_on_grid(self):
