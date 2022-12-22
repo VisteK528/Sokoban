@@ -1,62 +1,87 @@
 from level import Level
-from load_level import NoPlayerFoundError
+from load_level import (
+    LoadLevel,
+    check_requirements,
+    NoPlayerFoundError,
+    LevelNotFoundError,
+    UnmachtingBoxCountError
+    )
 import pygame
 import sys
 from settings import textures_id_dict
 from interface import Interface, Button, RGB
 
 
-class LevelEditor(Level):
+class LevelEditor:
     def __init__(self, width, height, level=1, tile_size=50):
-        super().__init__(width, height, level, tile_size)
-        self._tools_margin = 400
-        self._resolution = (self._width+self._tools_margin, self._height)
+        # Interface and Fonts
+        self._resolution = (width, height)
+        self._info_width = 400
         self._fps = 120
-
         self._interface = Interface(self._resolution, "Sokoban LEVEL Editor")
+        self._tile_size = tile_size
         self._header_font = pygame.font.Font(self._interface.font()[0], 24)
         self._text_font = pygame.font.Font(self._interface.font()[0], 15)
         self._button_font = pygame.font.Font(self._interface.font()[0], 20)
 
+        # Logic
+        self._level_number = level
+        self._level_width = self._resolution[0] - self._info_width
+        self._level_height = self._resolution[1]
+        self._rows = self._level_height // self._tile_size
+        self._columns = self._level_width // self._tile_size
+        self.load_level = LoadLevel()
+
+        self._level_data = self.load_level.load_empty_level(
+            self._rows, self._columns)
+
+        self._level = Level(self._level_width, self._level_height,
+                            self._level_data, self._tile_size)
+
+        # Buttons
         self._save_button = Button(
-            self._width + 40, 150, 140, 50, "SAVE", self._button_font)
+            self._level_width + 40, 150, 140, 50, "SAVE", self._button_font)
         self._load_button = Button(
-            self._width + 220, 150, 140, 50, "LOAD", self._button_font)
+            self._level_width + 220, 150, 140, 50, "LOAD", self._button_font)
 
     def _draw_menu(self):
-        self._interface.fill_color()
         self._interface.draw_rectangle(1000, 0, 400, 1000, RGB(180, 122, 255))
-        self._interface.draw_sprites(self.get_sprites())
         self._interface.draw_grid(self._rows, self._columns, self._tile_size)
 
         title = "Sokoban Level Editor"
-        level_text = f'Level: {self._level}'
+        level_text = f'Level: {self._level_number}'
         level_info = 'Press UP or DOWN to change level'
 
-        self._interface.draw_text(
-            title, 1200, 30, anchor="CENTER", font=self._header_font)
-        self._interface.draw_text(
-            level_text, self._width+45, 50, font=self._button_font)
-        self._interface.draw_text(
-            level_info, self._width+45, 80, font=self._text_font)
+        self._interface.draw_text(title, self._level_width+200, 30,
+                                  anchor="CENTER", font=self._header_font)
+        self._interface.draw_text(level_text, self._level_width+45,
+                                  50, font=self._button_font)
+        self._interface.draw_text(level_info, self._level_width+45,
+                                  80, font=self._text_font)
 
         self._save_button.draw(self._interface.get_window())
         self._load_button.draw(self._interface.get_window())
 
     def _save_level(self):
-        path = f"Levels/Level{self._level}_data.json"
-        super().save_level(path, self._level_data)
+        path = f"Levels/Level{self._level_number}_data.json"
+        level_data = self._level.get_level_data()
+        check_requirements(self._rows, self._columns, level_data)
+        self.load_level.save_to_file(path, level_data)
 
     def _load_level(self):
-        path = f"Levels/Level{self._level}_data.json"
+        path = f"Levels/Level{self._level_number}_data.json"
         try:
-            self._level_data = super().load_level(path)
-        except NoPlayerFoundError:
-            self._level_data = {
-                str(i): {
-                    str(j): 0 for j in range(self._columns)
-                    } for i in range(self._rows)}
-        self.setup()
+            self._level_data = self.load_level.load_from_file(path)
+            check_requirements(self._rows, self._columns, self._level_data)
+        except NoPlayerFoundError and LevelNotFoundError:
+            self._level_data = self.load_level.load_empty_level(
+                self._rows, self._columns)
+        except UnmachtingBoxCountError:
+            pass
+
+        self._level = Level(self._level_width, self._level_height,
+                            self._level_data, self._tile_size)
+        self._level.setup()
 
     def _get_mouse_coords_on_grid(self):
         position = pygame.mouse.get_pos()
@@ -66,11 +91,13 @@ class LevelEditor(Level):
 
     def run(self):
         clock = pygame.time.Clock()
-        self.setup()
+        self._level.setup()
         while True:
             clock.tick(self._fps)
 
+            self._interface.fill_color()
             self._draw_menu()
+            self._interface.draw_sprites(self._level.get_sprites())
 
             if self._save_button.action():
                 self._save_level()
@@ -88,7 +115,7 @@ class LevelEditor(Level):
                         column = str(column)
                         row = str(row)
 
-                        if not self._player_placed:
+                        if self._level.get_player() is None:
                             textures_number = len(textures_id_dict.keys()) - 1
                         else:
                             textures_number = len(textures_id_dict.keys()) - 2
@@ -97,16 +124,18 @@ class LevelEditor(Level):
                             self._level_data[row][column] += 1
                             if self._level_data[row][column] > textures_number:
                                 self._level_data[row][column] = 0
-                            self.setup()
+                            self._level.set_level_data(self._level_data)
+                            self._level.setup()
                         elif pygame.mouse.get_pressed()[2]:
                             self._level_data[row][column] -= 1
                             if self._level_data[row][column] < 0:
                                 self._level_data[row][column] = textures_number
-                            self.setup()
+                            self._level.set_level_data(self._level_data)
+                            self._level.setup()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_UP:
-                        self._level += 1
-                    elif event.key == pygame.K_DOWN and self._level > 1:
-                        self._level -= 1
+                        self._level_number += 1
+                    elif event.key == pygame.K_DOWN and self._level_number > 1:
+                        self._level_number -= 1
             pygame.display.update()

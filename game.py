@@ -1,37 +1,55 @@
 import pygame
 import sys
 from level import Level
+from load_level import LoadLevel, check_requirements
 from interface import Interface, Button, RGB
 from time import sleep
 
 
 class Game:
-    def __init__(self, screen_width, screen_height, level=1):
-        self._level = level
-        self._fps = 120
-        self._info_width = 400
+    def __init__(self, screen_width, screen_height, level=1, tile_size=50):
+        # Interface and Fonts
         self._resolution = (screen_width, screen_height)
-        self._background_color = RGB(173, 216, 230)
-
         self._interface = Interface(self._resolution, "Sokoban Game")
         self._header_font = pygame.font.Font(self._interface.font()[0], 40)
         self._text_font = pygame.font.Font(self._interface.font()[0], 15)
         self._button_font = pygame.font.Font(self._interface.font()[0], 20)
+        self._background_color = RGB(173, 216, 230)
+        self._info_width = 400
+        self._tile_size = 50
+        self._fps = 120
+        self._tile_size = tile_size
 
-    def load_level(self):
-        level = Level(self._resolution[0]-self._info_width,
-                      self._resolution[1], self._level)
+        self._restart_btn = Button(
+            self._resolution[0]-340, 300, 280, 80, "RESTART LEVEL",
+            self._button_font)
+        self._restart_btn.set_background_color(
+            RGB(0, 0, 0), RGB(255, 255, 255))
+        self._restart_btn.set_text_color(RGB(255, 255, 255), RGB(0, 0, 0))
+
+        # Logic
+        self._level = level
+        self._level_width = self._resolution[0] - self._info_width
+        self._level_height = self._resolution[1]
+        self._rows = self._level_height // self._tile_size
+        self._columns = self._level_width // self._tile_size
+
+    def _load_level(self):
+        width = self._resolution[0]-self._info_width
+        height = self._resolution[1]
+        path = f"Levels/Level{self._level}_data.json"
+
+        load_level = LoadLevel()
+        level_data = load_level.load_from_file(path)
+        check_requirements(self._rows, self._columns, level_data)
+
+        level = Level(width, height, level_data, self._tile_size)
         level.setup()
         return level
 
     def run(self):
         clock = pygame.time.Clock()
-        level = self.load_level()
-        restart_btn = Button(
-            self._resolution[0]-340, 300, 280, 80, "RESTART LEVEL",
-            self._button_font)
-        restart_btn.set_background_color(RGB(0, 0, 0), RGB(255, 255, 255))
-        restart_btn.set_text_color(RGB(255, 255, 255), RGB(0, 0, 0))
+        level = self._load_level()
         while True:
             clock.tick(self._fps)
             # Fill the screen with color
@@ -56,9 +74,9 @@ class Game:
             push_text = f"PUSHES: {level.get_player_pushes()}"
             self._interface.draw_text(push_text, self._resolution[0]-340, 200)
 
-            restart_btn.draw(self._interface.get_window())
-            if restart_btn.action():
-                level = self.load_level()
+            self._restart_btn.draw(self._interface.get_window())
+            if self._restart_btn.action():
+                level = self._load_level()
 
             # Uncomment to draw grid
             # rows, columns = level.get_dimensions()
@@ -67,7 +85,7 @@ class Game:
                 self._interface.draw_sprites(level.get_sprites())
                 pygame.display.update()
                 self._level += 1
-                level = self.load_level()
+                level = self._load_level()
                 sleep(0.5)
             self._interface.draw_sprites(level.get_sprites())
 
