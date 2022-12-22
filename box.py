@@ -7,7 +7,8 @@ class Box(pygame.sprite.Sprite):
         self._default_image = pygame.image.load("Textures/Box.png")
         self._change_image = pygame.image.load("Textures/Box_2.png")
         self.set_default_image()
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = self.image.get_rect(topleft=(0, 0))
+        self.position = pygame.math.Vector2(x, y)
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 50
 
@@ -16,3 +17,7 @@ class Box(pygame.sprite.Sprite):
 
     def set_change_image(self):
         self.image = self._change_image
+
+    def update_visual(self, tile_size):
+        self.rect.x = self.position.x * tile_size
+        self.rect.y = self.position.y * tile_size

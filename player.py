@@ -5,13 +5,12 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load("Textures/Player.png")
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = self.image.get_rect(topleft=(0, 0))
+        self.position = pygame.math.Vector2(x, y)
+
         self.direction = pygame.math.Vector2(0, 0)
         self.speed = 50
         self._clicked = False
-
-        self.moves = 0
-        self.pushes = 0
 
         self.moves = 0
         self.pushes = 0
@@ -44,6 +43,10 @@ class Player(pygame.sprite.Sprite):
                 key[pygame.K_w] or
                 key[pygame.K_s]):
             self._clicked = False
+
+    def update_visual(self, tile_size):
+        self.rect.x = self.position.x * tile_size
+        self.rect.y = self.position.y * tile_size
 
     def update(self):
         self.get_input()
