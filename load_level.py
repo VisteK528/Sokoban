@@ -37,75 +37,21 @@ class LevelNotFoundError(Exception):
 
 
 class LoadLevel:
-    def __init__(self, width, height, tile_size):
-        if width < 0 or height < 0:
-            raise InvalidDimensionsError(
-                "Level width or height cannot be negative")
-        if tile_size <= 0:
-            raise InvalidTileSizeError(
-                "Tile size cannot be negative"
-            )
-        if width % tile_size != 0 or height % tile_size != 0:
-            raise InvalidDimensionsError(
-                "Level width height must be multiple of tile size"
-            )
-        self._width = width
-        self._height = height
-        self._tile_size = tile_size
-        self._columns = self._width // self._tile_size
-        self._rows = self._height // self._tile_size
-
-    def _check_requirements(self, data):
-        player_required_count = 1
-        player_count = 0
-        box_count = 0
-        box_target_count = 0
-
-        if len(data.keys()) != self._rows:
-            raise InvalidDimensionsError(
-                "Level has to have the same dimensions as specified")
-
-        for row in data.values():
-            if len(row.keys()) != self._columns:
-                raise InvalidDimensionsError(
-                    "Level has to have the same dimensions as specified")
-            for value in row.values():
-                if value == textures_id_dict["player"]:
-                    player_count += 1
-                elif value == textures_id_dict["box"]:
-                    box_count += 1
-                elif value == textures_id_dict["box_target"]:
-                    box_target_count += 1
-                elif value == textures_id_dict["box_target_with_box"]:
-                    box_count += 1
-                    box_target_count += 1
-        if player_count > player_required_count:
-            raise TooManyPlayersFoundError(player_count)
-        if player_count == 0:
-            raise NoPlayerFoundError(
-                "Level cannot be initialized without player")
-        if box_count != box_target_count:
-            raise UnmachtingBoxCountError(
-                "Number of boxes on the level must "
-                "be equal to number of box targets")
-
-    def load_empty_level(self):
+    def load_empty_level(self, rows, columns):
         level_data = {str(i): {
-                    str(j): 0 for j in range(self._columns)
-                    } for i in range(self._rows)}
+                    str(j): 0 for j in range(columns)
+                    } for i in range(rows)}
         return level_data
 
-    def load_level(self, path):
+    def load_from_file(self, path):
         try:
             with open(path, "r") as file_handle:
                 data = self._read_from_json(file_handle)
+            return data
         except FileNotFoundError:
             raise LevelNotFoundError(path)
-        self._check_requirements(data)
-        return data
 
-    def save_level(self, path, data):
-        self._check_requirements(data)
+    def save_to_file(self, path, data):
         with open(path, "w") as file_handle:
             self._write_to_json(file_handle, data)
 
@@ -114,3 +60,38 @@ class LoadLevel:
 
     def _write_to_json(self, file_handle, data):
         json.dump(data, file_handle)
+
+
+def check_requirements(rows, columns, data):
+    player_count_required = 1
+    player_count = 0
+    box_count = 0
+    box_target_count = 0
+
+    if len(data.keys()) != rows:
+        raise InvalidDimensionsError(
+            "Level has to have the same dimensions as specified")
+
+    for row in data.values():
+        if len(row.keys()) != columns:
+            raise InvalidDimensionsError(
+                "Level has to have the same dimensions as specified")
+        for value in row.values():
+            if value == textures_id_dict["player"]:
+                player_count += 1
+            elif value == textures_id_dict["box"]:
+                box_count += 1
+            elif value == textures_id_dict["box_target"]:
+                box_target_count += 1
+            elif value == textures_id_dict["box_target_with_box"]:
+                box_count += 1
+                box_target_count += 1
+    if player_count > player_count_required:
+        raise TooManyPlayersFoundError(player_count)
+    if player_count == 0:
+        raise NoPlayerFoundError(
+            "Level cannot be initialized without player")
+    if box_count != box_target_count:
+        raise UnmachtingBoxCountError(
+            "Number of boxes on the level must "
+            "be equal to number of box targets")
