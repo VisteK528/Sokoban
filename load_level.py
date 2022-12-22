@@ -89,10 +89,16 @@ class LoadLevel:
                 "Number of boxes on the level must "
                 "be equal to number of box targets")
 
+    def load_empty_level(self):
+        level_data = {str(i): {
+                    str(j): 0 for j in range(self._columns)
+                    } for i in range(self._rows)}
+        return level_data
+
     def load_level(self, path):
         try:
             with open(path, "r") as file_handle:
-                data = self.read_from_json(file_handle)
+                data = self._read_from_json(file_handle)
         except FileNotFoundError:
             raise LevelNotFoundError(path)
         self._check_requirements(data)
@@ -101,12 +107,10 @@ class LoadLevel:
     def save_level(self, path, data):
         self._check_requirements(data)
         with open(path, "w") as file_handle:
-            self.write_to_json(file_handle, data)
+            self._write_to_json(file_handle, data)
 
-    @staticmethod
-    def read_from_json(file_handle):
+    def _read_from_json(self, file_handle):
         return json.load(file_handle)
 
-    @staticmethod
-    def write_to_json(file_handle, data):
+    def _write_to_json(self, file_handle, data):
         json.dump(data, file_handle)

@@ -3,29 +3,33 @@ from box import Box
 from box_target import BoxTarget
 from player import Player
 from tile import Tile
-from load_level import LoadLevel
 from settings import textures_id_dict
 
 
-class Level(LoadLevel):
-    def __init__(self, width, height, level=1, tile_size=50):
-        super().__init__(width, height, tile_size)
-        self._level = level
+class Level:
+    def __init__(self, width, height, level_data, tile_size=50):
+        self._tile_size = tile_size
+        self._width = width
+        self._height = height
 
-        if level is None:
-            self._level_data = {
-                row: {
-                    col: 0 for col in range(self._columns)
-                    } for row in range(self._rows)}
-        else:
-            self._level_data = self.load_level(
-                f"Levels/Level{self._level}_data.json")
+        self._rows = self._height // self._tile_size
+        self._columns = self._width // self._tile_size
+        self._level_data = level_data
+
+    def set_level_data(self, level_data):
+        self._level_data = level_data
+
+    def get_level_data(self):
+        return self._level_data
 
     def get_player_moves(self):
         return self._player.sprite.moves
 
     def get_player_pushes(self):
         return self._player.sprite.pushes
+
+    def get_player(self):
+        return self._player.sprite
 
     def get_dimensions(self):
         return self._rows, self._columns
@@ -35,7 +39,6 @@ class Level(LoadLevel):
         self._boxes = pygame.sprite.Group()
         self._boxes_targets = pygame.sprite.Group()
         self._player = pygame.sprite.GroupSingle()
-        self._player_placed = False
         for row in range(self._rows):
             for column in range(self._columns):
                 texture_id = self._level_data[str(row)][str(column)]
@@ -44,7 +47,6 @@ class Level(LoadLevel):
                 if texture_id == textures_id_dict["player"]:
                     # Player
                     self._player.add(Player(x, y))
-                    self._player_placed = True
                 elif texture_id == textures_id_dict["box_target"]:
                     # BoxTarget
                     self._boxes_targets.add(BoxTarget(x, y))
@@ -187,6 +189,9 @@ class Level(LoadLevel):
             return False
 
     def run(self):
+        # player
+        self._player.update()
+
         self.horizontal_collision()
         self.vertical_collision()
         # tiles
@@ -197,9 +202,6 @@ class Level(LoadLevel):
 
         # boxes
         self._boxes.update()
-
-        # player
-        self._player.update()
 
         if self.box_collision_with_target():
             return True

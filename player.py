@@ -13,9 +13,6 @@ class Player(pygame.sprite.Sprite):
         self.moves = 0
         self.pushes = 0
 
-        self.moves = 0
-        self.pushes = 0
-
     def get_input(self):
         key = pygame.key.get_pressed()
 
