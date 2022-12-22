@@ -35,8 +35,7 @@ class LevelEditor:
         self._level_data = self.load_level.load_empty_level(
             self._rows, self._columns)
 
-        self._level = Level(self._level_width, self._level_height,
-                            self._level_data, self._tile_size)
+        self._level = Level(self._rows, self._columns, self._level_data)
 
         # Buttons
         self._save_button = Button(
@@ -79,8 +78,7 @@ class LevelEditor:
         except UnmachtingBoxCountError:
             pass
 
-        self._level = Level(self._level_width, self._level_height,
-                            self._level_data, self._tile_size)
+        self._level = Level(self._rows, self._columns, self._level_data)
         self._level.setup()
 
     def _get_mouse_coords_on_grid(self):

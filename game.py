@@ -35,15 +35,13 @@ class Game:
         self._columns = self._level_width // self._tile_size
 
     def _load_level(self):
-        width = self._resolution[0]-self._info_width
-        height = self._resolution[1]
         path = f"Levels/Level{self._level}_data.json"
 
         load_level = LoadLevel()
         level_data = load_level.load_from_file(path)
         check_requirements(self._rows, self._columns, level_data)
 
-        level = Level(width, height, level_data, self._tile_size)
+        level = Level(self._rows, self._columns, level_data)
         level.setup()
         return level
 

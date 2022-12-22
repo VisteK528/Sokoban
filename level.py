@@ -7,13 +7,9 @@ from settings import textures_id_dict
 
 
 class Level:
-    def __init__(self, width, height, level_data, tile_size=50):
-        self._tile_size = tile_size
-        self._width = width
-        self._height = height
-
-        self._rows = self._height // self._tile_size
-        self._columns = self._width // self._tile_size
+    def __init__(self, rows, columns, level_data):
+        self._rows = rows
+        self._columns = columns
         self._level_data = level_data
 
     def set_level_data(self, level_data):

@@ -5,14 +5,13 @@ import pygame
 
 
 def test_create_level():
-    width = 100
-    height = 100
-    tile_size = 50
+    rows = 2
+    columns = 2
     fake_level_data = {
         "0": {"0": 3, "1": 1},
         "1": {"0": 2, "1": 5}
         }
-    Level(width, height, fake_level_data, tile_size)
+    Level(rows, columns, fake_level_data)
 
 
 def test_create_level_with_negative_width():
@@ -38,20 +37,19 @@ def test_player_vertical_move(monkeypatch):
         return keys
 
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
-    width = 150
-    height = 150
-    tile_size = 50
+    rows = 3
+    columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
                        "1": {"0": 2, "1": 0, "2": 0},
                        "2": {"0": 0, "1": 0, "2": 5}}
-    level = Level(width, height, fake_level_data, tile_size)
+    level = Level(rows, columns, fake_level_data)
     level.setup()
     player = level.get_player()
-    assert player.rect.x == 100
-    assert player.rect.y == 100
+    assert player.position.x == 2
+    assert player.position.y == 2
     level.run()
-    assert player.rect.x == 100
-    assert player.rect.y == 50
+    assert player.position.x == 2
+    assert player.position.y == 1
 
 
 def test_player_horizontal_move(monkeypatch):
@@ -61,20 +59,19 @@ def test_player_horizontal_move(monkeypatch):
         return keys
 
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
-    width = 150
-    height = 150
-    tile_size = 50
+    rows = 3
+    columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
                        "1": {"0": 2, "1": 0, "2": 0},
                        "2": {"0": 0, "1": 0, "2": 5}}
-    level = Level(width, height, fake_level_data, tile_size)
+    level = Level(rows, columns, fake_level_data)
     level.setup()
     player = level.get_player()
-    assert player.rect.x == 100
-    assert player.rect.y == 100
+    assert player.position.x == 2
+    assert player.position.y == 2
     level.run()
-    assert player.rect.x == 50
-    assert player.rect.y == 100
+    assert player.position.x == 1
+    assert player.position.y == 2
 
 
 def test_player_horizontal_collision_with_wall(monkeypatch):
@@ -84,20 +81,19 @@ def test_player_horizontal_collision_with_wall(monkeypatch):
         return keys
 
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
-    width = 150
-    height = 150
-    tile_size = 50
+    rows = 3
+    columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
                        "1": {"0": 2, "1": 0, "2": 0},
                        "2": {"0": 0, "1": 1, "2": 5}}
-    level = Level(width, height, fake_level_data, tile_size)
+    level = Level(rows, columns, fake_level_data)
     level.setup()
     player = level.get_player()
-    assert player.rect.x == 100
-    assert player.rect.y == 100
+    assert player.position.x == 2
+    assert player.position.y == 2
     level.run()
-    assert player.rect.x == 100
-    assert player.rect.y == 100
+    assert player.position.x == 2
+    assert player.position.y == 2
 
 
 def test_player_vertical_collision_with_wall(monkeypatch):
@@ -107,20 +103,19 @@ def test_player_vertical_collision_with_wall(monkeypatch):
         return keys
 
     monkeypatch.setattr("pygame.key.get_pressed", fake_input)
-    width = 150
-    height = 150
-    tile_size = 50
+    rows = 3
+    columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
                        "1": {"0": 2, "1": 0, "2": 1},
                        "2": {"0": 0, "1": 0, "2": 5}}
-    level = Level(width, height, fake_level_data, tile_size)
+    level = Level(rows, columns, fake_level_data)
     level.setup()
     player = level.get_player()
-    assert player.rect.x == 100
-    assert player.rect.y == 100
+    assert player.position.x == 2
+    assert player.position.y == 2
     level.run()
-    assert player.rect.x == 100
-    assert player.rect.y == 100
+    assert player.position.x == 2
+    assert player.position.y == 2
 
 
 def test_player_moves():
