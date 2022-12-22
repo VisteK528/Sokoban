@@ -42,8 +42,8 @@ class Level:
         for row in range(self._rows):
             for column in range(self._columns):
                 texture_id = self._level_data[str(row)][str(column)]
-                y = row * self._tile_size
-                x = column * self._tile_size
+                y = row
+                x = column
                 if texture_id == textures_id_dict["player"]:
                     # Player
                     self._player.add(Player(x, y))
@@ -65,52 +65,53 @@ class Level:
     def horizontal_collision(self):
         player = self._player.sprite
         box_move = False
-        move_value = player.direction.x * player.speed
+        move_value = player.direction.x
         if move_value != 0:
             player_move = True
         else:
             player_move = False
-        player.rect.x += move_value
+        player.position.x += move_value
 
         boxes = self._boxes.sprites()
         for box in boxes:
-            if box.rect.colliderect(player.rect):
+            if box.position == player.position:
                 box_move = True
                 player_move = True
-                box.rect.x += move_value
+                box.position.x += move_value
                 if player.direction.x < 0:
-                    player.rect.left = box.rect.right
+                    box.position.x = player.position.x - 1
                 elif player.direction.x > 0:
-                    player.rect.right = box.rect.left
+                    box.position.x = player.position.x + 1
 
         for i, box in enumerate(boxes):
             for box2 in boxes[i+1:]:
-                if box.rect.colliderect(box2):
+                if box.position == box2.position:
                     box_move = False
                     player_move = False
-                    box.rect.x -= move_value
-                    player.rect.x -= move_value
-                    if (box.rect.x - box.rect.width) == box2.rect.x:
-                        box.rect.left = box2.rect.right
+                    box.position.x -= move_value
+                    player.position.x -= move_value
+                    if (box.position.x - 1) == box2.rect.x:
+                        box.position.x = box2.position.x - 1
                     else:
-                        box.rect.right = box2.rect.left
+                        box.position.x = box2.position.x + 1
 
         for tile in self._tiles.sprites():
-            if tile.rect.colliderect(player.rect):
+            if player.position == tile.position:
                 player_move = False
                 if player.direction.x < 0:
-                    player.rect.left = tile.rect.right
+                    player.position.x = tile.position.x + 1
                 elif player.direction.x > 0:
-                    player.rect.right = tile.rect.left
+                    player.position.x = tile.position.x - 1
+
             for box in boxes:
-                if tile.rect.colliderect(box.rect):
+                if box.position == tile.position:
                     player_move = False
                     box_move = False
-                    player.rect.x -= move_value
+                    player.position.x -= move_value
                     if player.direction.x < 0:
-                        box.rect.left = tile.rect.right
+                        box.position.x = tile.position.x + 1
                     elif player.direction.x > 0:
-                        box.rect.right = tile.rect.left
+                        box.position.x = tile.position.x - 1
 
         if player_move:
             player.moves += 1
@@ -119,53 +120,54 @@ class Level:
 
     def vertical_collision(self):
         player = self._player.sprite
-        move_value = player.direction.y * player.speed
-        player.rect.y += move_value
+        box_move = False
+        move_value = player.direction.y
         if move_value != 0:
             player_move = True
         else:
             player_move = False
-        box_move = False
+        player.position.y += move_value
 
         boxes = self._boxes.sprites()
         for box in boxes:
-            if box.rect.colliderect(player.rect):
-                box.rect.y += move_value
-                player_move = True
+            if box.position == player.position:
                 box_move = True
+                player_move = True
+                box.position.y += move_value
                 if player.direction.y < 0:
-                    player.rect.top = box.rect.bottom
+                    box.position.y = player.position.y - 1
                 elif player.direction.y > 0:
-                    player.rect.bottom = box.rect.top
+                    box.position.y = player.position.y + 1
 
         for i, box in enumerate(boxes):
             for box2 in boxes[i+1:]:
-                if box.rect.colliderect(box2):
-                    player.rect.y -= move_value
-                    box.rect.y -= move_value
-                    player_move = False
+                if box.position == box2.position:
                     box_move = False
-                    if (box.rect.y - box.rect.height) == box2.rect.y:
-                        box.rect.top = box2.rect.bottom
+                    player_move = False
+                    box.position.y -= move_value
+                    player.position.y -= move_value
+                    if (box.position.y - 1) == box2.rect.y:
+                        box.position.y = box2.position.y - 1
                     else:
-                        box.rect.bottom = box2.rect.top
+                        box.position.y = box2.position.y + 1
 
         for tile in self._tiles.sprites():
-            if tile.rect.colliderect(player.rect):
+            if player.position == tile.position:
                 player_move = False
                 if player.direction.y < 0:
-                    player.rect.top = tile.rect.bottom
+                    player.position.y = tile.position.y + 1
                 elif player.direction.y > 0:
-                    player.rect.bottom = tile.rect.top
+                    player.position.y = tile.position.y - 1
+
             for box in boxes:
-                if tile.rect.colliderect(box.rect):
+                if box.position == tile.position:
                     player_move = False
                     box_move = False
-                    player.rect.y -= move_value
+                    player.position.y -= move_value
                     if player.direction.y < 0:
-                        box.rect.top = tile.rect.bottom
+                        box.position.y = tile.position.y + 1
                     elif player.direction.y > 0:
-                        box.rect.bottom = tile.rect.top
+                        box.position.y = tile.position.y - 1
 
         if player_move:
             player.moves += 1
@@ -180,7 +182,7 @@ class Level:
             box.set_default_image()
         for box in boxes:
             for target in targets:
-                if box.rect.x == target.rect.x and box.rect.y == target.rect.y:
+                if box.position == target.position:
                     box.set_change_image()
                     completed_boxes += 1
         if completed_boxes == len(targets):

@@ -179,6 +179,8 @@ class Interface:
         :type sprites_list: list
         """
         for sprite_group in sprites_list:
+            for sprite in sprite_group:
+                sprite.update_visual(50)
             sprite_group.draw(self._window)
 
 
