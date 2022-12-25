@@ -33,6 +33,7 @@ class Game:
         self._level_height = self._resolution[1]
         self._rows = self._level_height // self._tile_size
         self._columns = self._level_width // self._tile_size
+        self._key_clicked = False
 
     def _load_level(self):
         path = f"Levels/Level{self._level}_data.json"
@@ -44,6 +45,15 @@ class Game:
         level = Level(self._rows, self._columns, level_data)
         level.setup()
         return level
+
+    def _update_key_clicked(self, keyboard_input):
+        if not (keyboard_input[pygame.K_a] or
+                keyboard_input[pygame.K_d] or
+                keyboard_input[pygame.K_w] or
+                keyboard_input[pygame.K_s]):
+            self._key_clicked = False
+        else:
+            self._key_clicked = True
 
     def run(self):
         clock = pygame.time.Clock()
@@ -71,22 +81,23 @@ class Game:
 
             push_text = f"PUSHES: {level.get_player_pushes()}"
             self._interface.draw_text(push_text, self._resolution[0]-340, 200)
-
             self._restart_btn.draw(self._interface.get_window())
+
             if self._restart_btn.action():
                 level = self._load_level()
 
-            # Uncomment to draw grid
-            # rows, columns = level.get_dimensions()
-            # interface.draw_grid(rows, columns, 50)
-            if level.run():
-                self._interface.draw_sprites(level.get_sprites())
-                pygame.display.update()
-                self._level += 1
-                level = self._load_level()
-                sleep(0.5)
-            self._interface.draw_sprites(level.get_sprites())
+            keyboard_input = pygame.key.get_pressed()
+            if not self._key_clicked:
+                if level.run(keyboard_input):
+                    self._interface.draw_sprites(level.get_sprites())
+                    pygame.display.update()
+                    self._level += 1
+                    level = self._load_level()
+                    sleep(0.5)
 
+            self._update_key_clicked(keyboard_input)
+
+            self._interface.draw_sprites(level.get_sprites())
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

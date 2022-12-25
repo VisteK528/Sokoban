@@ -30,13 +30,10 @@ def test_get_level_dimensions():
     pass
 
 
-def test_player_vertical_move(monkeypatch):
-    def fake_input():
-        keys = {i: False for i in range(512)}
-        keys.update({pygame.K_w: True})
-        return keys
+def test_player_vertical_move():
+    keyboard_input = {i: False for i in range(512)}
+    keyboard_input.update({pygame.K_w: True})
 
-    monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     rows = 3
     columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
@@ -47,18 +44,15 @@ def test_player_vertical_move(monkeypatch):
     player = level.get_player()
     assert player.position.x == 2
     assert player.position.y == 2
-    level.run()
+    level.run(keyboard_input)
     assert player.position.x == 2
     assert player.position.y == 1
 
 
-def test_player_horizontal_move(monkeypatch):
-    def fake_input():
-        keys = {i: False for i in range(512)}
-        keys.update({pygame.K_a: True})
-        return keys
+def test_player_horizontal_move():
+    keyboard_input = {i: False for i in range(512)}
+    keyboard_input.update({pygame.K_a: True})
 
-    monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     rows = 3
     columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
@@ -69,18 +63,15 @@ def test_player_horizontal_move(monkeypatch):
     player = level.get_player()
     assert player.position.x == 2
     assert player.position.y == 2
-    level.run()
+    level.run(keyboard_input)
     assert player.position.x == 1
     assert player.position.y == 2
 
 
-def test_player_horizontal_collision_with_wall(monkeypatch):
-    def fake_input():
-        keys = {i: False for i in range(512)}
-        keys.update({pygame.K_a: True})
-        return keys
+def test_player_horizontal_collision_with_wall():
+    keyboard_input = {i: False for i in range(512)}
+    keyboard_input.update({pygame.K_a: True})
 
-    monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     rows = 3
     columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
@@ -91,18 +82,15 @@ def test_player_horizontal_collision_with_wall(monkeypatch):
     player = level.get_player()
     assert player.position.x == 2
     assert player.position.y == 2
-    level.run()
+    level.run(keyboard_input)
     assert player.position.x == 2
     assert player.position.y == 2
 
 
-def test_player_vertical_collision_with_wall(monkeypatch):
-    def fake_input():
-        keys = {i: False for i in range(512)}
-        keys.update({pygame.K_w: True})
-        return keys
+def test_player_vertical_collision_with_wall():
+    keyboard_input = {i: False for i in range(512)}
+    keyboard_input.update({pygame.K_w: True})
 
-    monkeypatch.setattr("pygame.key.get_pressed", fake_input)
     rows = 3
     columns = 3
     fake_level_data = {"0": {"0": 3, "1": 1, "2": 0},
@@ -113,7 +101,7 @@ def test_player_vertical_collision_with_wall(monkeypatch):
     player = level.get_player()
     assert player.position.x == 2
     assert player.position.y == 2
-    level.run()
+    level.run(keyboard_input)
     assert player.position.x == 2
     assert player.position.y == 2
 

@@ -1,8 +1,9 @@
 import pygame
-from box import Box
+"""from box import Box
 from box_target import BoxTarget
 from player import Player
-from tile import Tile
+from tile import Tile"""
+from classes import Box, Player, BoxTarget, Tile
 from settings import textures_id_dict
 
 
@@ -186,7 +187,27 @@ class Level:
         else:
             return False
 
-    def run(self):
+    def _update_player(self, keyboard_input):
+        player = self._player.sprite
+
+        if keyboard_input[pygame.K_w]:
+            player.direction.x = 0
+            player.direction.y = -1
+        elif keyboard_input[pygame.K_s]:
+            player.direction.x = 0
+            player.direction.y = 1
+        elif keyboard_input[pygame.K_a]:
+            player.direction.x = -1
+            player.direction.y = 0
+        elif keyboard_input[pygame.K_d]:
+            player.direction.x = 1
+            player.direction.y = 0
+        else:
+            player.direction.x = 0
+            player.direction.y = 0
+
+    def run(self, keyboard_input):
+        self._update_player(keyboard_input)
         # player
         self._player.update()
 

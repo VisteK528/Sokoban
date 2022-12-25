@@ -16,9 +16,7 @@ class Player(Entity):
         super().__init__(x, y)
         self.image = pygame.image.load("Textures/Player.png")
         self.rect = self.image.get_rect(topleft=(0, 0))
-
         self.direction = pygame.math.Vector2(0, 0)
-        self.clicked = False
 
         self.moves = 0
         self.pushes = 0
