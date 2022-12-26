@@ -59,6 +59,17 @@ class Level:
                     # Tile
                     self._tiles.add(Tile(x, y))
 
+    @staticmethod
+    def two_entities_collision(entity1, entity2):
+        x1 = entity1.position.x
+        x2 = entity2.position.x
+        y1 = entity1.position.y
+        y2 = entity2.position.y
+        if (x1 == x2) and (y1 == y2):
+            return True
+        else:
+            return False
+
     def horizontal_collision(self):
         player = self._player.sprite
         box_move = False
@@ -71,7 +82,7 @@ class Level:
 
         boxes = self._boxes.sprites()
         for box in boxes:
-            if box.position == player.position:
+            if self.two_entities_collision(box, player):
                 box_move = True
                 player_move = True
                 box.position.x += move_value
@@ -82,18 +93,17 @@ class Level:
 
         for i, box in enumerate(boxes):
             for box2 in boxes[i+1:]:
-                if box.position == box2.position:
+                if self.two_entities_collision(box, box2):
                     box_move = False
                     player_move = False
-                    box.position.x -= move_value
                     player.position.x -= move_value
-                    if (box.position.x - 1) == box2.rect.x:
-                        box.position.x = box2.position.x - 1
-                    else:
+                    if player.direction.x < 0:
                         box.position.x = box2.position.x + 1
+                    elif player.direction.x > 0:
+                        box.position.x = box2.position.x - 1
 
         for tile in self._tiles.sprites():
-            if player.position == tile.position:
+            if self.two_entities_collision(player, tile):
                 player_move = False
                 if player.direction.x < 0:
                     player.position.x = tile.position.x + 1
@@ -101,7 +111,7 @@ class Level:
                     player.position.x = tile.position.x - 1
 
             for box in boxes:
-                if box.position == tile.position:
+                if self.two_entities_collision(box, tile):
                     player_move = False
                     box_move = False
                     player.position.x -= move_value
@@ -127,7 +137,7 @@ class Level:
 
         boxes = self._boxes.sprites()
         for box in boxes:
-            if box.position == player.position:
+            if self.two_entities_collision(box, player):
                 box_move = True
                 player_move = True
                 box.position.y += move_value
@@ -138,18 +148,17 @@ class Level:
 
         for i, box in enumerate(boxes):
             for box2 in boxes[i+1:]:
-                if box.position == box2.position:
+                if self.two_entities_collision(box, box2):
                     box_move = False
                     player_move = False
-                    box.position.y -= move_value
                     player.position.y -= move_value
-                    if (box.position.y - 1) == box2.rect.y:
-                        box.position.y = box2.position.y - 1
-                    else:
+                    if player.direction.y < 0:
                         box.position.y = box2.position.y + 1
+                    elif player.direction.y > 0:
+                        box.position.y = box2.position.y - 1
 
         for tile in self._tiles.sprites():
-            if player.position == tile.position:
+            if self.two_entities_collision(player, tile):
                 player_move = False
                 if player.direction.y < 0:
                     player.position.y = tile.position.y + 1
@@ -157,7 +166,7 @@ class Level:
                     player.position.y = tile.position.y - 1
 
             for box in boxes:
-                if box.position == tile.position:
+                if self.two_entities_collision(box, tile):
                     player_move = False
                     box_move = False
                     player.position.y -= move_value
@@ -177,11 +186,11 @@ class Level:
         completed_boxes = 0
         for box in boxes:
             box.set_default_image()
-        for box in boxes:
             for target in targets:
-                if box.position == target.position:
+                if self.two_entities_collision(box, target):
                     box.set_change_image()
                     completed_boxes += 1
+
         if completed_boxes == len(targets):
             return True
         else:
