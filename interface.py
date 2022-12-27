@@ -98,7 +98,7 @@ class Interface:
 
     def draw_rectangle(
             self, x: int, y: int, width: int, height: int, color: RGB,
-            anchor="NW"):
+            anchor="NW", alpha=255):
         """
         Draws rectangle on the screen with specified parameters
         :param x: X coordinate of the rectangle
@@ -117,6 +117,7 @@ class Interface:
         """
         x, y = self._convert_coords_by_anchor(x, y, width, height, anchor)
         image = pygame.Surface((width, height))
+        image.set_alpha(alpha)
         image.fill(color.rgb())
         rect = image.get_rect(topleft=(x, y))
         self._window.blit(image, (rect.x, rect.y))

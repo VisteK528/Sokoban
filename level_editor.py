@@ -72,7 +72,7 @@ class LevelEditor:
         try:
             self._level_data = self.load_level.load_from_file(path)
             check_requirements(self._rows, self._columns, self._level_data)
-        except NoPlayerFoundError and LevelNotFoundError:
+        except (NoPlayerFoundError, LevelNotFoundError):
             self._level_data = self.load_level.load_empty_level(
                 self._rows, self._columns)
         except UnmachtingBoxCountError:

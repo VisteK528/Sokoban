@@ -14,6 +14,9 @@ class Level:
     def get_completed_targets(self):
         return self._completed_targets
 
+    def set_level_data(self, level_data):
+        self._level_data = level_data
+
     def get_level_data(self):
         return self._level_data
 
