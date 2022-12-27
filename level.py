@@ -1,8 +1,4 @@
 import pygame
-"""from box import Box
-from box_target import BoxTarget
-from player import Player
-from tile import Tile"""
 from classes import Box, Player, BoxTarget, Tile
 from settings import textures_id_dict
 
@@ -13,8 +9,10 @@ class Level:
         self._columns = columns
         self._level_data = level_data
 
-    def set_level_data(self, level_data):
-        self._level_data = level_data
+        self._completed_targets = 0
+
+    def get_completed_targets(self):
+        return self._completed_targets
 
     def get_level_data(self):
         return self._level_data
@@ -27,9 +25,6 @@ class Level:
 
     def get_player(self):
         return self._player.sprite
-
-    def get_dimensions(self):
-        return self._rows, self._columns
 
     def setup(self):
         self._tiles = pygame.sprite.Group()
@@ -70,7 +65,7 @@ class Level:
         else:
             return False
 
-    def horizontal_collision(self):
+    def _horizontal_collision(self):
         player = self._player.sprite
         box_move = False
         move_value = player.direction.x
@@ -125,7 +120,7 @@ class Level:
         if box_move:
             player.pushes += 1
 
-    def vertical_collision(self):
+    def _vertical_collision(self):
         player = self._player.sprite
         box_move = False
         move_value = player.direction.y
@@ -180,7 +175,7 @@ class Level:
         if box_move:
             player.pushes += 1
 
-    def box_collision_with_target(self):
+    def _box_collision_with_target(self):
         boxes = self._boxes
         targets = self._boxes_targets
         completed_boxes = 0
@@ -191,10 +186,7 @@ class Level:
                     box.set_change_image()
                     completed_boxes += 1
 
-        if completed_boxes == len(targets):
-            return True
-        else:
-            return False
+        self._completed_targets = completed_boxes
 
     def _update_player(self, keyboard_input):
         player = self._player.sprite
@@ -220,8 +212,8 @@ class Level:
         # player
         self._player.update()
 
-        self.horizontal_collision()
-        self.vertical_collision()
+        self._horizontal_collision()
+        self._vertical_collision()
         # tiles
         self._tiles.update()
 
@@ -231,7 +223,8 @@ class Level:
         # boxes
         self._boxes.update()
 
-        if self.box_collision_with_target():
+        self._box_collision_with_target()
+        if self._completed_targets == len(self._boxes_targets):
             return True
         else:
             return False
