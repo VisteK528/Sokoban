@@ -37,13 +37,19 @@ class LevelNotFoundError(Exception):
 
 
 class LoadLevel:
-    def load_empty_level(self, rows, columns):
+    def load_empty_level(self, rows: int, columns: int):
+        """
+        Loads empty level with specified dimensions
+        """
         level_data = {str(i): {
                     str(j): 0 for j in range(columns)
                     } for i in range(rows)}
         return level_data
 
-    def load_from_file(self, path):
+    def load_from_file(self, path: str) -> dict:
+        """
+        Loads level data from given path
+        """
         try:
             with open(path, "r") as file_handle:
                 data = self._read_from_json(file_handle)
@@ -51,7 +57,10 @@ class LoadLevel:
         except FileNotFoundError:
             raise LevelNotFoundError(path)
 
-    def save_to_file(self, path, data):
+    def save_to_file(self, path: str, data: dict):
+        """
+        Saves level data to given path
+        """
         with open(path, "w") as file_handle:
             self._write_to_json(file_handle, data)
 
@@ -62,7 +71,10 @@ class LoadLevel:
         json.dump(data, file_handle)
 
 
-def check_requirements(rows, columns, data):
+def check_requirements(rows: int, columns: int, data: dict):
+    """
+    Checks if level data matches game requirements
+    """
     player_count_required = 1
     player_count = 0
     box_count = 0

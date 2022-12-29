@@ -1,4 +1,5 @@
 import pygame
+from typing import Tuple
 
 
 class TextDimensionsError(Exception):
@@ -56,9 +57,17 @@ class RGB:
 
 class Interface:
     """
-    Class Interface
+    Class Interface Contains attributes:
+    :param resolution: Resolution of the display in pixels (width, height)
+    :type resoultion: tuple of integers
+    :param window_title: Tile of the displayed window
+    :type window_title: str
+    :param default_font: Default font and font size used in the interface,
+    default - Retro_Gaming, 20. Format - (path, size)
+    :type default_font: tuple of str and int
     """
-    def __init__(self, resolution, window_title=None, default_font=None):
+    def __init__(self, resolution: Tuple[int, int], window_title=None,
+                 default_font=None):
         self._resolution = resolution
         self._window = pygame.display.set_mode(self._resolution)
         if window_title is not None:
@@ -71,17 +80,34 @@ class Interface:
             self._default_font = default_font[0]
             self._default_font_size = default_font[1]
 
-    def set_font(self, font):
+    def set_font(self, font: Tuple[str, int]):
         self._default_font, self._default_font_size = font
 
-    def font(self):
+    def font(self) -> Tuple[str, int]:
         return self._default_font, self._default_font_size
 
-    def get_window(self):
+    def get_window(self) -> pygame.display:
+        """
+        Returns Interface's display object
+        """
         return self._window
 
     def draw_grid(self, rows, columns, tile_size,
                   color=RGB(255, 255, 255), x=0, y=0):
+        """
+        Draws grid on the screen with specified parameters
+        :param rows: Number of rows in the grid
+        :type rows: int
+        :param columns: Number of columns in the grid
+        :type columns: int
+        :param tile_size: Size of one cell in the grid (which is a square)
+        :type tile_size: int
+        :param color: Color of grid's lines in RGB format
+        :type color: RGB class
+        :param x: X-coordinate of the grid (anchor=NW), default x=0
+        :type x: int
+        :param y: Y-coorindate of the grind(anchor=NW), default y=0
+        """
         width = rows*tile_size
         height = columns*tile_size
         for row_count in range(rows+1):
@@ -114,6 +140,8 @@ class Interface:
         :param anchor: Anchor of the (x, y) coordinates, default "NW",
                        available anchors: ''NE', 'NW', 'SE', 'SW' and 'CENTER'
         :type anchor: str
+        :param alpha: Opacity of the rectangle, default alpha=255
+        :type alpha: int
         """
         x, y = self._convert_coords_by_anchor(x, y, width, height, anchor)
         image = pygame.Surface((width, height))
@@ -186,7 +214,8 @@ class Interface:
 
 
 class Button:
-    def __init__(self, x, y, width, height, text, font):
+    def __init__(self, x: int, y: int, width: int, height: int,
+                 text: str, font: pygame.font.Font):
         self._x = x
         self._y = y
         self._width = width
@@ -215,14 +244,24 @@ class Button:
         self.rect = self.image.get_rect(topleft=(self._x, self._y))
 
     def set_background_color(self, first_color: "RGB", second_color: "RGB"):
+        """
+        Sets button's default color and color when it collides with mouse
+        """
         self._background_color_1 = first_color
         self._background_color_2 = second_color
 
     def set_text_color(self, first_color: "RGB", second_color: "RGB"):
+        """
+        Sets button's text default color and text color
+        when it collides with mouse
+        """
         self._text_color_1 = first_color
         self._text_color_2 = second_color
 
-    def draw(self, window):
+    def draw(self, window: pygame.display):
+        """
+        Draws button on the given display
+        """
         text_img = self._font.render(self._text, True, self._text_color.rgb())
         text_width, text_height = self._font.size(self._text)
         x_offset = (self._width-text_width)//2
@@ -233,6 +272,12 @@ class Button:
             text_img, (self._x+x_offset, self._y+y_offset))
 
     def action(self):
+        """
+        Checks if user mouse collided with button object.
+        If user mouse collided with button object
+        and user used left-button then returns True.
+        Otherwise returns False.
+        """
         pos = pygame.mouse.get_pos()
 
         if self.rect.collidepoint(pos):

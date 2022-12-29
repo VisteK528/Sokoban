@@ -7,10 +7,23 @@ from time import sleep
 
 
 class Game:
-    def __init__(
-            self, screen_width, screen_height, level, max_level, tile_size=50):
+    """
+    Class Game. Contains attributes:
+    :param window_width: Width of game's window
+    :type window_width: int
+    :param window_height: Height of the game's window
+    :type window_height: int
+    :param level: First level value
+    :type level: int
+    :param max_level: Last level value
+    :type max_level: int
+    :param tile_size: Size of one texture in the game, default=50
+    :type tile_size: int
+    """
+    def __init__(self, window_width: int, window_height: int, level: int,
+                 max_level: int, tile_size=50):
         # Interface and Fonts
-        self._resolution = (screen_width, screen_height)
+        self._resolution = (window_width, window_height)
         self._interface = Interface(self._resolution, "Sokoban Game")
         self._header_font = pygame.font.Font(self._interface.font()[0], 40)
         self._text_font = pygame.font.Font(self._interface.font()[0], 15)
@@ -39,6 +52,9 @@ class Game:
         self._key_clicked = False
 
     def _display_victory_message(self):
+        """
+        Displays half-lucent white rectangle with victory message on it.
+        """
         text = "Congratulations!"
         text2 = "You have finished the Sokoban Game!"
         self._interface.draw_rectangle(
@@ -51,7 +67,10 @@ class Game:
             text2, self._level_width//2, self._level_height//2+25,
             color=RGB(0, 0, 0), anchor="CENTER", font=self._header_font)
 
-    def _load_level(self):
+    def _load_level(self) -> Level:
+        """
+        Loads level from directory and checks if it fits current game
+        """
         path = f"Levels/Level{self._level}_data.json"
 
         load_level = LoadLevel()
@@ -62,7 +81,11 @@ class Game:
         level.setup()
         return level
 
-    def _update_key_clicked(self, keyboard_input):
+    def _update_key_clicked(self, keyboard_input: dict):
+        """
+        Checks if one of the game key's (W, S, A, D) was pressed.
+        Then based on the result updates self._key_clicked variable
+        """
         if not (keyboard_input[pygame.K_a] or
                 keyboard_input[pygame.K_d] or
                 keyboard_input[pygame.K_w] or
