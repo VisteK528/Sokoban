@@ -79,7 +79,6 @@ class LevelEditor:
             pass
 
         self._level = Level(self._rows, self._columns, self._level_data)
-        self._level.setup()
 
     def _get_mouse_coords_on_grid(self):
         position = pygame.mouse.get_pos()
@@ -89,7 +88,6 @@ class LevelEditor:
 
     def run(self):
         clock = pygame.time.Clock()
-        self._level.setup()
         while True:
             clock.tick(self._fps)
 

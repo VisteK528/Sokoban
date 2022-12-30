@@ -78,7 +78,6 @@ class Game:
         check_requirements(self._rows, self._columns, level_data)
 
         level = Level(self._rows, self._columns, level_data)
-        level.setup()
         return level
 
     def _update_key_clicked(self, keyboard_input: dict):

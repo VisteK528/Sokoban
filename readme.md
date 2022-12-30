@@ -1,10 +1,11 @@
 # Sokoban
-# Zasady Gry
-Gra jest rozgrywana na planszy z kwadratów, gdzie każdy kwadrat jest podłogą lub ścianą. Niektóre kwadraty na podłodze zawierają pudełka, a niektóre kwadraty na podłodze są oznaczone jako miejsca do przechowywania.
+# Ogólne informacje
+Gra składa się z 15 poziomów o różnym stopniu trudności. Możliwe jest dodawanie nowych poziomów poprzez dodatkowy edytor poziomów. Poziomy zapisywane są w formacie JSON.
 
-Gracz jest ograniczony do planszy i może poruszać się poziomo lub pionowo na puste kwadraty (nigdy przez ściany lub pudełka). Gracz może przesunąć skrzynię, podchodząc do niej i przesuwając ją na sąsiedni kwadrat. Pudełek nie można ciągnąć, nie można ich też pchać na kwadraty ze ścianami lub innymi pudełkami. Liczba pudełek równa się liczbie miejsc do przechowywania. Zagadka zostaje rozwiązana, gdy wszystkie pudełka znajdą się w miejscach przechowywania.
+Gra jest rozgrywana na planszy z kwadratów, gdzie każdy kwadrat jest podłogą lub ścianą. Niektóre kwadraty na podłodze zawierają pudełka, a niektóre kwadraty na podłodze są oznaczone jako cele.
 
-Gra powinna oferować kilka poziomów o różnym stopniu trudności. Kolejny poziom odblokowywany jest po ukończeniu poprzedniego. Projekt można zrealizować z wykorzystaniem interfejsu graficznego lub w konsoli. Interfejs powinien umożliwiać restart poziomu.
+Gracz jest ograniczony do planszy i może poruszać się poziomo lub pionowo na puste kwadraty (nigdy przez ściany lub pudełka). Gracz może przesunąć skrzynię, podchodząc do niej i przesuwając ją na sąsiedni kwadrat. Pudełek nie można ciągnąć, nie można ich też pchać na kwadraty ze ścianami lub innymi pudełkami. Poziom zostaje zaliczony w momencie umieszczenia wszystich pudełek na polach celu.
+
 # Sterowanie
 ## Gra
 Sterowanie w grze odbywa się za pomocą przycisów:
@@ -12,6 +13,7 @@ Sterowanie w grze odbywa się za pomocą przycisów:
 2. S - w dół
 3. A - w lewo
 4. D - w prawo
+
 Ponadto do resetowania poziomu należy użyć myszki
 ## Edytor świata
 W edytorze świata plansza podzielona jest na n wierszy oraz m kolumn gdzie n = (wysokość planszy // wymiary pojedyńczego kwadratu) oraz m = (szerokość planszy // wymiary pojedyńczego kwadratu) (obie wartości podawane w pikselach).
@@ -27,6 +29,7 @@ Użytkownik posiada następującą pulę obiektów o określonych indeksach(w sy
 4. Pudełko z celem
 5. Gracz
 6. Pusta przestrzeń
+
 W przypadku, gdy gracz jest już ustawiony na planszy użytkownik ma do wyboru następującą pulę obiektów:
 1. Ściana
 2. Pudełko
@@ -53,4 +56,3 @@ Projekt został podzielony na następujące katalogi oraz moduły
 4. level_editor.py - główny moduł edytora zawierający klasę LevelEditor
 5. level.py - moduł levelu zawierający klasę Level zajmującą się logiką rozgrywki na danym poziomie
 6. load_level.py - moduł zawierający klasę LoadLevel zajmującą się wczytywaniem danych poziomu z pliku oraz funkcję check_requirements() zajmującą się sprawdzaniem spójności ładowanego poziomu z aktualnie zainicjalizowaną grą
-# Testy jednostowe

@@ -19,11 +19,7 @@ class Level:
         self._level_data = level_data
 
         self._completed_targets = 0
-
-        self._tiles = pygame.sprite.Group()
-        self._boxes = pygame.sprite.Group()
-        self._boxes_targets = pygame.sprite.Group()
-        self._player = pygame.sprite.GroupSingle()
+        self.setup()
 
     def get_completed_targets(self):
         return self._completed_targets
@@ -51,6 +47,11 @@ class Level:
         Reads the given level data and then creates specific
         objects based in the given coordinates
         """
+        self._tiles = pygame.sprite.Group()
+        self._boxes = pygame.sprite.Group()
+        self._boxes_targets = pygame.sprite.Group()
+        self._player = pygame.sprite.GroupSingle()
+
         for row in range(self._rows):
             for column in range(self._columns):
                 texture_id = self._level_data[str(row)][str(column)]
