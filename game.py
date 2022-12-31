@@ -96,8 +96,25 @@ class Game:
     def run(self):
         clock = pygame.time.Clock()
         level = self._load_level()
+        next_level = False
+        game_over = False
         while True:
             clock.tick(self._fps)
+            if self._game_on:
+                if self._restart_btn.action():
+                    level = self._load_level()
+
+                keyboard_input = pygame.key.get_pressed()
+
+                if not self._key_clicked:
+                    if level.run(keyboard_input):
+                        if (self._level + 1) > self._max_level:
+                            game_over = True
+                        else:
+                            next_level = True
+
+                self._update_key_clicked(keyboard_input)
+
             # Fill the screen with color
             self._interface.fill_color(self._background_color)
 
@@ -110,37 +127,19 @@ class Game:
                 title, 1200, 40, RGB(0, 0, 0), anchor="CENTER",
                 font=self._header_font)
 
-            # Draw level number, restart button
+            # Draw level number, player's moves, pushes
             level_text = f"LEVEL: {self._level}"
             self._interface.draw_text(level_text, self._resolution[0]-340, 100)
-
             moves_text = f"MOVES: {level.get_player_moves()}"
             self._interface.draw_text(moves_text, self._resolution[0]-340, 150)
-
             push_text = f"PUSHES: {level.get_player_pushes()}"
             self._interface.draw_text(push_text, self._resolution[0]-340, 200)
+
+            # Draw restart button and draw sprites on the screen
             self._restart_btn.draw(self._interface.get_window())
-
-            if self._game_on:
-                if self._restart_btn.action():
-                    level = self._load_level()
-
-                keyboard_input = pygame.key.get_pressed()
-                if not self._key_clicked:
-                    if level.run(keyboard_input):
-                        self._level += 1
-                        if self._level > self._max_level:
-                            self._game_on = False
-                        else:
-                            self._interface.draw_sprites(level.get_sprites())
-                            pygame.display.update()
-                            level = self._load_level()
-                            sleep(0.5)
-
-                self._update_key_clicked(keyboard_input)
-
             self._interface.draw_sprites(level.get_sprites())
-            if self._level > self._max_level:
+
+            if game_over:
                 self._display_victory_message()
 
             for event in pygame.event.get():
@@ -148,3 +147,9 @@ class Game:
                     pygame.quit()
                     sys.exit()
             pygame.display.update()
+
+            if next_level:
+                next_level = False
+                self._level += 1
+                level = self._load_level()
+                sleep(0.5)

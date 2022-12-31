@@ -205,7 +205,7 @@ class Level:
         if box_move:
             player.pushes += 1
 
-    def _box_collision_with_target(self):
+    def _box_collision_with_target(self) -> None:
         """
         Checks collision between boxes and targets
         Number of collisons is assigned to self._completed_targets variable
@@ -222,7 +222,7 @@ class Level:
 
         self._completed_targets = completed_boxes
 
-    def _update_player(self, keyboard_input: dict):
+    def _update_player(self, keyboard_input: dict) -> None:
         """
         Updates player's move direction value
         based on the given keyboard_input
