@@ -49,6 +49,7 @@ class LoadLevel:
     def load_from_file(self, path: str) -> dict:
         """
         Loads level data from given path
+        Throws LevelNotFoundEror when level cannot be found under given path
         """
         try:
             with open(path, "r") as file_handle:
@@ -74,6 +75,15 @@ class LoadLevel:
 def check_requirements(rows: int, columns: int, data: dict):
     """
     Checks if level data matches game requirements
+
+    Raises
+    ------
+    InvalidDimensinsError: Level data dimensions differ from expected
+                            dimensions
+    TooManyPlayersFoundError: If Level has more than 1 player
+    NoPlayerFoundError: If Level has no player declared
+    UnmachingBoxCountError: Number of boxes found in the level vary
+                            from expected level of targets
     """
     player_count_required = 1
     player_count = 0

@@ -8,7 +8,10 @@ from time import sleep
 
 class Game:
     """
-    Class Game. Contains attributes:
+    Class Game.
+
+    Parameters
+    ----------
     :param window_width: Width of game's window
     :type window_width: int
     :param window_height: Height of the game's window
@@ -51,7 +54,7 @@ class Game:
         self._columns = self._level_width // self._tile_size
         self._key_clicked = False
 
-    def _display_victory_message(self):
+    def _display_victory_message(self) -> None:
         """
         Displays half-lucent white rectangle with victory message on it.
         """
@@ -80,7 +83,7 @@ class Game:
         level = Level(self._rows, self._columns, level_data)
         return level
 
-    def _update_key_clicked(self, keyboard_input: dict):
+    def _update_key_clicked(self, keyboard_input: dict) -> None:
         """
         Checks if one of the game key's (W, S, A, D) was pressed.
         Then based on the result updates self._key_clicked variable
@@ -94,6 +97,9 @@ class Game:
             self._key_clicked = True
 
     def run(self):
+        """
+        Starts the game
+        """
         clock = pygame.time.Clock()
         level = self._load_level()
         next_level = False

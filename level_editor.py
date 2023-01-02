@@ -4,16 +4,38 @@ from load_level import (
     check_requirements,
     NoPlayerFoundError,
     LevelNotFoundError,
-    UnmachtingBoxCountError
+    UnmachtingBoxCountError,
+    InvalidDimensionsError
     )
 import pygame
 import sys
 from settings import textures_id_dict
 from interface import Interface, Button, RGB
+from typing import Tuple
 
 
 class LevelEditor:
-    def __init__(self, width, height, level=1, tile_size=50):
+    """
+    Class LevelEditor
+
+    Parameters
+    ----------
+
+    :param width: Width of the window in pixels
+    :type width: int
+    :param height: Height of the window in pixels
+    :type height: int
+    :param level_path: Path to which levels will be saved
+                       and from which will be loaded
+    :type level_path: str
+    :param level: Starting level of the editor, default level=1
+    :type level: int
+    :param tile_size: Size of one square texture in pixels,
+                      default tile_size=50
+    :type tile_size: int
+    """
+    def __init__(self, width: int, height: int, level_path: str,
+                 level=1, tile_size=50) -> None:
         # Interface and Fonts
         self._resolution = (width, height)
         self._info_width = 400
@@ -25,6 +47,7 @@ class LevelEditor:
         self._button_font = pygame.font.Font(self._interface.font()[0], 20)
 
         # Logic
+        self._level_path = level_path
         self._level_number = level
         self._level_width = self._resolution[0] - self._info_width
         self._level_height = self._resolution[1]
@@ -43,7 +66,10 @@ class LevelEditor:
         self._load_button = Button(
             self._level_width + 220, 150, 140, 50, "LOAD", self._button_font)
 
-    def _draw_menu(self):
+    def _draw_menu(self) -> None:
+        """
+        Draws menu on the right side of the screen
+        """
         self._interface.draw_rectangle(1000, 0, 400, 1000, RGB(180, 122, 255))
         self._interface.draw_grid(self._rows, self._columns, self._tile_size)
 
@@ -61,32 +87,77 @@ class LevelEditor:
         self._save_button.draw(self._interface.get_window())
         self._load_button.draw(self._interface.get_window())
 
-    def _save_level(self):
-        path = f"Levels/Level{self._level_number}_data.json"
-        level_data = self._level.get_level_data()
-        check_requirements(self._rows, self._columns, level_data)
-        self.load_level.save_to_file(path, level_data)
+    def _display_error_message(self, message: str) -> None:
+        """
+        Displays given error message on the screen
+        """
+        x = self._level_width//2
+        y = self._level_height//2
+        width = self._header_font.size(message)[0] + 50
+        height = 200
+        box_color = RGB(255, 255, 255)
+        text_color = RGB(0, 0, 0)
+        self._interface.draw_message(
+            x, y, width, height, box_color,
+            text_color, message, self._header_font)
 
-    def _load_level(self):
-        path = f"Levels/Level{self._level_number}_data.json"
+    def _save_level(self) -> None:
+        """
+        Saves newly created level to path
+        if it matches level requirements.
+
+        Otherwise displays message to user
+        """
+        path = f"{self._level_path}/Level{self._level_number}_data.json"
+        level_data = self._level.get_level_data()
         try:
-            self._level_data = self.load_level.load_from_file(path)
-            check_requirements(self._rows, self._columns, self._level_data)
-        except (NoPlayerFoundError, LevelNotFoundError):
-            self._level_data = self.load_level.load_empty_level(
-                self._rows, self._columns)
+            check_requirements(self._rows, self._columns, level_data)
+            self.load_level.save_to_file(path, level_data)
+        except NoPlayerFoundError:
+            self._display_error_message(
+                "Level cannot be saved, no player found!")
         except UnmachtingBoxCountError:
+            self._display_error_message(
+                "Box count doesn't match the target count!"
+            )
+
+    def _load_level(self) -> None:
+        """
+        Loads level from path,
+        if Level is not found or has invalid dimensions
+        displays mesage to user
+        """
+        path = f"{self._level_path}/Level{self._level_number}_data.json"
+        try:
+            data = self.load_level.load_from_file(path)
+            check_requirements(self._rows, self._columns, data)
+            self._level_data = data
+            self._level = Level(self._rows, self._columns, self._level_data)
+        except LevelNotFoundError:
+            self._display_error_message(
+                "Level with given name or with given path doesn't exits"
+            )
+        except InvalidDimensionsError:
+            self._display_error_message(
+                "Loaded level has different dimensions and cannot be loaded"
+            )
+        except Exception:
             pass
 
-        self._level = Level(self._rows, self._columns, self._level_data)
-
-    def _get_mouse_coords_on_grid(self):
+    def _get_mouse_coords_on_grid(self) -> Tuple[int, int]:
+        """
+        Gets the position of mouse's cursor on the grid
+        and returns in which row and column it is
+        """
         position = pygame.mouse.get_pos()
         row = position[1] // self._tile_size
         column = position[0] // self._tile_size
         return row, column
 
-    def run(self):
+    def run(self) -> None:
+        """
+        Starts the LevelEditor
+        """
         clock = pygame.time.Clock()
         while True:
             clock.tick(self._fps)
