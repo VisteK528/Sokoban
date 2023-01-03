@@ -2,7 +2,6 @@
 from level import Level
 # from load_level import LoadLevel
 import pygame
-from classes import Entity
 
 
 def test_create_level():
@@ -51,7 +50,25 @@ def test_player_horizontal_move():
     assert player.position.y == 2
 
 
-def test_player_horizontal_collision_with_wall():
+def test_player_horizontal_collision_with_wall_right():
+    keyboard_input = {i: False for i in range(512)}
+    keyboard_input.update({pygame.K_a: True})
+
+    rows = 3
+    columns = 3
+    test_level_data = {"0": {"0": 3, "1": 1, "2": 0},
+                       "1": {"0": 2, "1": 0, "2": 0},
+                       "2": {"0": 5, "1": 1, "2": 0}}
+    level = Level(rows, columns, test_level_data)
+    player = level.get_player()
+    assert player.position.x == 0
+    assert player.position.y == 2
+    level.run(keyboard_input)
+    assert player.position.x == 0
+    assert player.position.y == 2
+
+
+def test_player_horizontal_collision_with_wall_left():
     keyboard_input = {i: False for i in range(512)}
     keyboard_input.update({pygame.K_a: True})
 
@@ -69,7 +86,7 @@ def test_player_horizontal_collision_with_wall():
     assert player.position.y == 2
 
 
-def test_player_vertical_collision_with_wall():
+def test_player_vertical_collision_with_wall_up():
     keyboard_input = {i: False for i in range(512)}
     keyboard_input.update({pygame.K_w: True})
 
@@ -85,6 +102,24 @@ def test_player_vertical_collision_with_wall():
     level.run(keyboard_input)
     assert player.position.x == 2
     assert player.position.y == 2
+
+
+def test_player_vertical_collision_with_wall_down():
+    keyboard_input = {i: False for i in range(512)}
+    keyboard_input.update({pygame.K_w: True})
+
+    rows = 3
+    columns = 3
+    test_level_data = {"0": {"0": 3, "1": 1, "2": 5},
+                       "1": {"0": 2, "1": 0, "2": 1},
+                       "2": {"0": 0, "1": 0, "2": 0}}
+    level = Level(rows, columns, test_level_data)
+    player = level.get_player()
+    assert player.position.x == 2
+    assert player.position.y == 0
+    level.run(keyboard_input)
+    assert player.position.x == 2
+    assert player.position.y == 0
 
 
 def test_player_moves():
@@ -351,21 +386,3 @@ def test_move_beyond_the_map_down():
     level.run(keyboard_input)
     assert player.position.x == 2
     assert player.position.y == 2
-
-
-def test_two_entities_collision_false():
-    entity1 = Entity(5, 0)
-    entity2 = Entity(4, 0)
-    assert Level.two_entities_collision(entity1, entity2) is False
-
-
-def test_two_entities_collision_false_2():
-    entity1 = Entity(7, 7)
-    entity2 = Entity(8, 7)
-    assert Level.two_entities_collision(entity1, entity2) is False
-
-
-def test_two_entities_collision_true_2():
-    entity1 = Entity(7, 7)
-    entity2 = Entity(7, 7)
-    assert Level.two_entities_collision(entity1, entity2) is True

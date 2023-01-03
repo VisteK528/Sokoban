@@ -16,6 +16,8 @@ def test_save_data_to_json():
     path = "Tests/test_save_level.json"
     load_level = LoadLevel()
     load_level.save_to_file(path, data)
+    loaded_data = load_level.load_from_file(path)
+    assert data == loaded_data
 
 
 def test_check_requirements_with_no_player():
