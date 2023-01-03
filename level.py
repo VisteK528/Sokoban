@@ -75,6 +75,22 @@ class Level:
                     # Tile
                     self._tiles.add(Tile(x, y))
 
+    def _check_if_on_the_map(self) -> bool:
+        """
+        Checks if player will be on the map after
+        making move with current direction
+        """
+        player = self._player.sprite
+        position = player.position.copy()
+        direction = player.direction.copy()
+        position.x += direction.x
+        position.y += direction.y
+        if position.x < 0 or position.x > self._columns - 1:
+            return False
+        elif position.y < 0 or position.y > self._rows - 1:
+            return False
+        return True
+
     @staticmethod
     def two_entities_collision(entity1: Entity, entity2: Entity) -> bool:
         """
@@ -250,22 +266,22 @@ class Level:
         Runs the level in one round
         """
         self._update_player(keyboard_input)
-        # player
-        self._player.update()
+        if self._check_if_on_the_map():
+            # player
+            self._player.update()
 
-        self._horizontal_collision()
-        self._vertical_collision()
-        # tiles
-        self._tiles.update()
+            self._horizontal_collision()
+            self._vertical_collision()
+            # tiles
+            self._tiles.update()
 
-        # boxes targets
-        self._boxes_targets.update()
+            # boxes targets
+            self._boxes_targets.update()
 
-        # boxes
-        self._boxes.update()
+            # boxes
+            self._boxes.update()
 
-        self._box_collision_with_target()
-        if self._completed_targets == len(self._boxes_targets):
-            return True
-        else:
-            return False
+            self._box_collision_with_target()
+            if self._completed_targets == len(self._boxes_targets):
+                return True
+        return False
