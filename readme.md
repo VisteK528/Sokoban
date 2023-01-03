@@ -6,6 +6,19 @@ Gra jest rozgrywana na planszy z kwadratów, gdzie każdy kwadrat jest podłogą
 
 Gracz jest ograniczony do planszy i może poruszać się poziomo lub pionowo na puste kwadraty (nigdy przez ściany lub pudełka). Gracz może przesunąć skrzynię, podchodząc do niej i przesuwając ją na sąsiedni kwadrat. Pudełek nie można ciągnąć, nie można ich też pchać na kwadraty ze ścianami lub innymi pudełkami. Poziom zostaje zaliczony w momencie umieszczenia wszystich pudełek na polach celu.
 
+# Reprezentacja poziomu
+Poziom jest reprezentowany w postaci pliku JSON zapisanego w katalogu Levels. Jako klucze zawiera numery wierszy na planszy, natomiast wartościami są kolejne słowniki zawierajace jako klucze numer kolumny. Pod kluczem numeru kolumny znajduje się wartość z przedziału 0-5
+reprezentujaca określone byty
+
+0. Pusta przestrzeń
+1. Ściana
+2. Pudełko
+3. Cel
+4. Pudełko z celem
+5. Gracz
+
+W trakcie gry dane poziomu wczytywane są z pliku JSON do słownika. Następnie po weryfikacji zgodności z aktualną sesją gry przekazywane są do obiektu klasy Level, w której to następuje zdekododwanie wartości za pomocą słownika tekstur z pliku settings.py. W efekcie tego na mapie dodawane są odpowiednie byty na pozycjach wskazanych przez numer wiersza i kolumny.
+
 # Sterowanie
 ## Gra
 Sterowanie w grze odbywa się za pomocą przycisów:
@@ -23,19 +36,19 @@ Aby załadować poziom, należy wybrać interesujący użytkownika poziom za pom
 W przypadku, gdy interesujący użytkownika poziom jeszcze nie istnieje załadowany zostanie pusty poziom.
 
 Użytkownik posiada następującą pulę obiektów o określonych indeksach(w sytuacji, gdy gracz nie jest jeszcze ustawiony na planszy):
+0. Pusta przestrzeń
 1. Ściana
 2. Pudełko
 3. Cel
 4. Pudełko z celem
 5. Gracz
-6. Pusta przestrzeń
 
 W przypadku, gdy gracz jest już ustawiony na planszy użytkownik ma do wyboru następującą pulę obiektów:
+0. Pusta przestrzeń
 1. Ściana
 2. Pudełko
 3. Cel
 4. Pudełko z celem
-5. Pusta przestrzeń
 
 Domyślnie licznik stawiania obiektów(w każdym polu) ma wartość 0. Aby postawić obiekt z puli należy użyć lewego przycisku myszki. Spowoduje to i zwiększenie licznika stawiania w tym polu o jeden i postawienie i-tego obiektu. Z kolei użycie prawego przycisku myszki spowoduje zmniejszenie licznika stawiania w tym polu o jeden i postawienie i-tego obiektu. Operacja zwiększania oraz zmniejszania w polu odbywa się w cyklu zamkniętym.
 

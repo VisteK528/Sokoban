@@ -2,6 +2,17 @@ import pygame
 
 
 class Entity(pygame.sprite.Sprite):
+    """
+    Class Entity
+
+    Parameters
+    ----------
+
+    :param x: X position of Entity on the grid
+    :type x: int
+    :param y: Y position of Entity on the grid
+    :type y: int
+    """
     def __init__(self, x: int, y: int):
         super().__init__()
         self.position = pygame.math.Vector2(x, y)
