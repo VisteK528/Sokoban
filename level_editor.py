@@ -21,9 +21,9 @@ class LevelEditor:
     Parameters
     ----------
 
-    :param width: Width of the window in pixels
+    :param width: Width of the level in pixels, max_width=1000
     :type width: int
-    :param height: Height of the window in pixels
+    :param height: Height of the level in pixels, max_width=1000
     :type height: int
     :param level_path: Path to which levels will be saved
                        and from which will be loaded
@@ -37,8 +37,9 @@ class LevelEditor:
     def __init__(self, width: int, height: int, level_path: str,
                  level=1, tile_size=50) -> None:
         # Interface and Fonts
-        self._resolution = (width, height)
         self._info_width = 400
+        self._resolution = (
+            min(width+self._info_width, 1400), min(height+300, 1000))
         self._fps = 120
         self._interface = Interface(self._resolution, "Sokoban LEVEL Editor")
         self._tile_size = tile_size
@@ -49,8 +50,8 @@ class LevelEditor:
         # Logic
         self._level_path = level_path
         self._level_number = level
-        self._level_width = self._resolution[0] - self._info_width
-        self._level_height = self._resolution[1]
+        self._level_width = width
+        self._level_height = height
         self._rows = self._level_height // self._tile_size
         self._columns = self._level_width // self._tile_size
         self.load_level = LoadLevel()
@@ -70,7 +71,9 @@ class LevelEditor:
         """
         Draws menu on the right side of the screen
         """
-        self._interface.draw_rectangle(1000, 0, 400, 1000, RGB(180, 122, 255))
+        _, height = self._resolution
+        self._interface.draw_rectangle(
+            self._level_width, 0, self._info_width, height, RGB(180, 122, 255))
         self._interface.draw_grid(self._rows, self._columns, self._tile_size)
 
         title = "Sokoban Level Editor"

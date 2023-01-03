@@ -1,6 +1,6 @@
 from level_editor import LevelEditor
-from settings import screen_height, screen_width
+from settings import level_width, level_height
 
 if __name__ == "__main__":
-    editor = LevelEditor(screen_width, screen_height, "Levels/")
+    editor = LevelEditor(level_height, level_width, "Levels/")
     editor.run()

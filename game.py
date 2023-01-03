@@ -12,10 +12,10 @@ class Game:
 
     Parameters
     ----------
-    :param window_width: Width of game's window
-    :type window_width: int
-    :param window_height: Height of the game's window
-    :type window_height: int
+    :param level_width: Width of the game's level in pixels, max_value=1000
+    :type level_width: int
+    :param level_height: Height of the game's level in pixels, max_value=1000
+    :type level_height: int
     :param level: First level value
     :type level: int
     :param max_level: Last level value
@@ -23,16 +23,19 @@ class Game:
     :param tile_size: Size of one texture in the game, default=50
     :type tile_size: int
     """
-    def __init__(self, window_width: int, window_height: int, level: int,
+    def __init__(self, level_width: int, level_height: int, level: int,
                  max_level: int, tile_size=50):
         # Interface and Fonts
+        self._info_width = 400
+        self._info_height = 400
+        window_width = min(level_width+self._info_width, 1400)
+        window_height = min(level_height+self._info_height, 1000)
         self._resolution = (window_width, window_height)
         self._interface = Interface(self._resolution, "Sokoban Game")
         self._header_font = pygame.font.Font(self._interface.font()[0], 40)
         self._text_font = pygame.font.Font(self._interface.font()[0], 15)
         self._button_font = pygame.font.Font(self._interface.font()[0], 20)
         self._background_color = RGB(173, 216, 230)
-        self._info_width = 400
         self._tile_size = 50
         self._fps = 120
         self._tile_size = tile_size
@@ -47,9 +50,8 @@ class Game:
         # Logic
         self._level = level
         self._max_level = max_level
-        self._game_on = True
-        self._level_width = self._resolution[0] - self._info_width
-        self._level_height = self._resolution[1]
+        self._level_width = level_width
+        self._level_height = level_height
         self._rows = self._level_height // self._tile_size
         self._columns = self._level_width // self._tile_size
         self._key_clicked = False
@@ -106,7 +108,7 @@ class Game:
         game_over = False
         while True:
             clock.tick(self._fps)
-            if self._game_on:
+            if not game_over:
                 if self._restart_btn.action():
                     level = self._load_level()
 

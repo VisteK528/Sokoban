@@ -1,5 +1,5 @@
-screen_width = 1400
-screen_height = 1000
+level_width = 1000
+level_height = 1000
 level = 1
 max_level = 15
 textures_id_dict = {
