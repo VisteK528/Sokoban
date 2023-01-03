@@ -47,7 +47,6 @@ class Game:
         # Logic
         self._level = level
         self._max_level = max_level
-        self._game_on = True
         self._level_width = self._resolution[0] - self._info_width
         self._level_height = self._resolution[1]
         self._rows = self._level_height // self._tile_size
@@ -106,7 +105,7 @@ class Game:
         game_over = False
         while True:
             clock.tick(self._fps)
-            if self._game_on:
+            if not game_over:
                 if self._restart_btn.action():
                     level = self._load_level()
 
