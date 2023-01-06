@@ -108,6 +108,11 @@ class Game:
         game_over = False
         while True:
             clock.tick(self._fps)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
             if not game_over:
                 if self._restart_btn.action():
                     level = self._load_level()
@@ -150,10 +155,6 @@ class Game:
             if game_over:
                 self._display_victory_message()
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
             pygame.display.update()
 
             if next_level:

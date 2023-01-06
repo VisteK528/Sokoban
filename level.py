@@ -76,14 +76,12 @@ class Level:
                     # Tile
                     self._tiles.add(Tile(x, y))
 
-    def _check_if_on_the_map(self) -> bool:
+    def _check_if_on_the_map(self, sprite, direction) -> bool:
         """
-        Checks if player will be on the map after
+        Checks if sprite will be on the map after
         making move with current direction
         """
-        player = self._player.sprite
-        position = player.position.copy()
-        direction = player.direction.copy()
+        position = sprite.position.copy()
         position.x += direction.x
         position.y += direction.y
         if position.x < 0 or position.x > self._columns - 1:
@@ -142,13 +140,18 @@ class Level:
         boxes = self._boxes.sprites()
         for box in boxes:
             if self._two_entities_collision(box, player):
-                box_move = True
-                player_move = True
-                box.position[key] += move_value
-                if player.direction[key] < 0:
-                    box.position[key] = player.position[key] - 1
-                elif player.direction[key] > 0:
-                    box.position[key] = player.position[key] + 1
+                if self._check_if_on_the_map(box, player.direction):
+                    box_move = True
+                    player_move = True
+                    box.position[key] += move_value
+                    if player.direction[key] < 0:
+                        box.position[key] = player.position[key] - 1
+                    elif player.direction[key] > 0:
+                        box.position[key] = player.position[key] + 1
+                else:
+                    player.position[key] -= move_value
+                    player_move = False
+                    box_move = False
 
         for i, box in enumerate(boxes):
             for box2 in boxes[i+1:]:
@@ -229,7 +232,8 @@ class Level:
         Runs the level in one round
         """
         self._update_player(keyboard_input)
-        if self._check_if_on_the_map():
+        player = self._player.sprite
+        if self._check_if_on_the_map(player, player.direction):
             # player
             self._player.update()
 
