@@ -234,19 +234,8 @@ class Level:
         self._update_player(keyboard_input)
         player = self._player.sprite
         if self._check_if_on_the_map(player, player.direction):
-            # player
-            self._player.update()
-
             self._horizontal_collision()
             self._vertical_collision()
-            # tiles
-            self._tiles.update()
-
-            # boxes targets
-            self._boxes_targets.update()
-
-            # boxes
-            self._boxes.update()
 
             self._box_collision_with_target()
             if self._completed_targets == len(self._boxes_targets):

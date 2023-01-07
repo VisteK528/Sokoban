@@ -114,9 +114,6 @@ class Game:
                     sys.exit()
 
             if not game_over:
-                if self._restart_btn.action():
-                    level = self._load_level()
-
                 keyboard_input = pygame.key.get_pressed()
 
                 if not self._key_clicked:
@@ -154,6 +151,9 @@ class Game:
 
             if game_over:
                 self._display_victory_message()
+            else:
+                if self._restart_btn.action():
+                    level.setup()
 
             pygame.display.update()
 
