@@ -53,6 +53,7 @@ W przypadku, gdy plik w formacie **{path}/Level{nr poziomu}_data.json** nie istn
 Na planszy podzielonej siatką na kwadraty użytkownik może umieszczać pożądane przez niego obiekty ze zbioru (Pusta przestrzeń, Ściana, Pudełko, Cel, Pudełko z celem, Gracz) za pomocą lewego bądź prawego przycisku myszy. Każde pole ma domyślnie wartość 0. Użycie lewego przycisku myszy spowoduje zwiększenie indekstu pola o 1, natomiast prawego przycisku myszy zmniejszenie indeksu pola o 1. Gdy indeks pola posiada wartość maksymalną i użyty zostanie na nim lewy przycisk myszy wpisana zostanie wartość minimalna - 0. Natomiast w przypadku, gdy pole ma wartość 0 i użyty zostanie prawy przycisk myszy, pole zyskuje wartość maksymalną.
 
 Gdy na planszy nie ma jeszcze gracza, każde pole posiada określony zakres wartości odpowiadających poszczególnym bytom:
+
 0. Pusta przestrzeń
 1. Ściana
 2. Pudełko
@@ -61,6 +62,7 @@ Gdy na planszy nie ma jeszcze gracza, każde pole posiada określony zakres wart
 5. Gracz
 
 W przypadku gdy gracz zostanie umieszczony na planszy, każde pole posiada określnoy zakres wartości odpowiadających poszczególnym bytom:
+
 0. Pusta przestrzeń
 1. Ściana
 2. Pudełko
