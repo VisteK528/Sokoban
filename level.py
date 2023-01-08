@@ -153,16 +153,17 @@ class Level:
                     player_move = False
                     box_move = False
 
-        for i, box in enumerate(boxes):
-            for box2 in boxes[i+1:]:
-                if self._two_entities_collision(box, box2):
-                    box_move = False
-                    player_move = False
-                    player.position[key] -= move_value
-                    if player.direction[key] < 0:
-                        box.position[key] = box2.position[key] + 1
-                    elif player.direction[key] > 0:
-                        box.position[key] = box2.position[key] - 1
+        if player_move and box_move:
+            for i, box in enumerate(boxes):
+                for box2 in boxes[i+1:]:
+                    if self._two_entities_collision(box, box2):
+                        box_move = False
+                        player_move = False
+                        player.position[key] -= move_value
+                        if player.direction[key] < 0:
+                            box.position[key] = box2.position[key] + 1
+                        elif player.direction[key] > 0:
+                            box.position[key] = box2.position[key] - 1
 
         for tile in self._tiles.sprites():
             if self._two_entities_collision(player, tile):
@@ -172,15 +173,16 @@ class Level:
                 elif player.direction[key] > 0:
                     player.position[key] = tile.position[key] - 1
 
-            for box in boxes:
-                if self._two_entities_collision(box, tile):
-                    player_move = False
-                    box_move = False
-                    player.position[key] -= move_value
-                    if player.direction[key] < 0:
-                        box.position[key] = tile.position[key] + 1
-                    elif player.direction[key] > 0:
-                        box.position[key] = tile.position[key] - 1
+            if player_move:
+                for box in boxes:
+                    if self._two_entities_collision(box, tile):
+                        player_move = False
+                        box_move = False
+                        player.position[key] -= move_value
+                        if player.direction[key] < 0:
+                            box.position[key] = tile.position[key] + 1
+                        elif player.direction[key] > 0:
+                            box.position[key] = tile.position[key] - 1
 
         if player_move:
             player.moves += 1
@@ -233,11 +235,12 @@ class Level:
         """
         self._update_player(keyboard_input)
         player = self._player.sprite
-        if self._check_if_on_the_map(player, player.direction):
-            self._horizontal_collision()
-            self._vertical_collision()
+        if player.direction.x != 0 or player.direction.y != 0:
+            if self._check_if_on_the_map(player, player.direction):
+                self._horizontal_collision()
+                self._vertical_collision()
 
-            self._box_collision_with_target()
-            if self._completed_targets == len(self._boxes_targets):
-                return True
+                self._box_collision_with_target()
+                if self._completed_targets == len(self._boxes_targets):
+                    return True
         return False
