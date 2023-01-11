@@ -5,6 +5,7 @@
 * ## [Podział projektu](#podziac582-projektu-1)
 * ## [Współpraca z bibliotekami](#wspc3b3c582praca-z-bibliotekami-1)
 * ## [Realizacja problemu reprezentacji poziomu](#realizacja-problemu-reprezentacji-poziomu-1)
+* ## [Dodawanie nowych poziomów](#dodawanie-nowych-poziomc3b3w-1)
 * ## [Testy jednostkowe](#testy-jednostkowe-1)
 # Treść zadania
 Gra jest rozgrywana na planszy z kwadratów, gdzie każdy kwadrat jest podłogą lub ścianą. Niektóre kwadraty na podłodze zawierają pudełka, a niektóre kwadraty na podłodze są oznaczone jako miejsca do przechowywania.
@@ -185,6 +186,10 @@ Przykładowy poziom wymiaru 3x3 zapisany w formacie JSON
 Wygląd w grze
 
 ![Przykładowy poziom](Textures/poziom.png)
+
+# Dodawanie nowych poziomów
+Dodawanie nowych poziomów odbywa się poprzez stworzenie nowego poziomu jako pliku JSON zgodnego z aktualną sesją gry ręcznie(niezalecane) lub za pomocą Edytora poziomów(zalecane). Następnie taki poziom należy umieścić w podkatalogu Levels umieszczonym w głównym folderze gry. Gdy chcemy podmienić aktualnie istniejący poziom poprzez nowym poziom należy zastąpić dotychczasowy plik z indeksem poziomu plikiem z indentyczną nazwą, zawierający nową wersję poziomu. W przypadku, gdy chcemy rozszerzyć grę o dodatkowe nowe poziomy (powyżej 15 poziomu), należy stworzyć plik z numerem poziomu w nazwie zgodny z formatem Level{nr poziomu}_data.json i umieścić go w tym samym podkatalogu. Ostatecznie, gdy dodajemy dodatkowe poziomy powyżej 15 należy zmienić wartość zmiennej max_level w module settings.py na wartość odpowiadającą indeksowi najwyższego poziomu
+
 # Testy jednostkowe
 Główna logika gry realizowana jest w ramach klasy Level, dlatego też większość testów jednostkowych zrealizowanych jest właśnie dla metody run z tej klasy.
 

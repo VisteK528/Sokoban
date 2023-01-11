@@ -62,14 +62,15 @@ class Game:
         """
         text = "Congratulations!"
         text2 = "You have finished the Sokoban Game!"
+        text_height = self._header_font.size(text)[1]
         self._interface.draw_rectangle(
             0, 0, self._level_width, self._level_height,
             RGB(255, 255, 255), alpha=150)
         self._interface.draw_text(
-            text, self._level_width//2, self._level_height//2-25,
+            text, self._level_width//2, self._level_height//2-text_height,
             color=RGB(0, 0, 0), anchor="CENTER", font=self._header_font)
         self._interface.draw_text(
-            text2, self._level_width//2, self._level_height//2+25,
+            text2, self._level_width//2, self._level_height//2+text_height//2,
             color=RGB(0, 0, 0), anchor="CENTER", font=self._header_font)
 
     def _load_level(self) -> Level:
